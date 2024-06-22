@@ -1,0 +1,72 @@
+<div class="view-single-job">
+	<h4>Job Title: <%= foundJob.title %>
+	</h4>
+	<p>Description: <%= foundJob.description %>
+	</p>
+	<p>Employer: <%= foundJob.employer %>
+	</p>
+	<p>Location: <%= foundJob.location %>
+	</p>
+	<p>Duration: <%= foundJob.duration %>
+	</p>
+	<p>Positions Available: <%= foundJob.numOfPos %>
+	</p>
+	<p>Status: <%= foundJob.status %>
+	</p>
+	<p>Posted on: <%= foundJob.created_date %>
+	</p>
+	<a href="/jobs" class="btn btn-info">Back</a>
+	<a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
+	<a href="/apply" class="btn btn-success">Apply</a>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade modal-lg" id="edit-job" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+	aria-labelledby="edit-jobLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="edit-jobLabel">Edit Job details</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form method="put" action="/jobs/<%= foundJob._id %>/edit">
+					<div class="mb-3">
+						<label for="title" class="form-label">Title</label>
+						<input type="text" class="form-control" name="job[title]" id="title"
+							value="<%= foundJob.title %>" aria-describedby="titleHelp">
+					</div>
+					<div class="mb-3">
+						<label for="description" class="form-label">Description</label>
+						<textarea type="text" class="form-control" name="job[description]" id="description" rows="3"
+							cols="20" aria-describedby="desHelp"><%= foundJob.description %></textarea>
+					</div>
+					<div class="mb-3">
+						<label for="location" class="form-label">Location:</label>
+						<input type="location" class="form-control" name="job[location]" id="location"
+							value="<%= foundJob.location %>" aria-describedby="locationHelp">
+					</div>
+					<div class="mb-3">
+						<label for="employer" class="form-label">Employer</label>
+						<input type="text" class="form-control" name="job[employer]" id="employer"
+							value="<%= foundJob.employer %>" aria-describedby="titleHelp">
+					</div>
+					<div class="mb-3">
+						<label for="numOfPos" class="form-label">Positions</label>
+						<input type="number" class="form-control" name="job[numOfPos]" id="numOfPos" min="1"
+							value="<%= foundJob.numOfPos %>" aria-describedby="titleHelp">
+					</div>
+					<div class="mb-3">
+						<label for="duration" class="form-label">Duration</label>
+						<input type="text" class="form-control" name="job[duration]" id="duration"
+							value="<%= foundJob.duration %>" aria-describedby="titleHelp">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

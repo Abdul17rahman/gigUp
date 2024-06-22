@@ -1,0 +1,34 @@
+<div class="container">
+	<h3>Post a new job</h3>
+	<form method="post" action="/jobs">
+		<div class="mb-3">
+			<label for="title" class="form-label">Title</label>
+			<input type="text" class="form-control" name="job[title]" id="title" aria-describedby="titleHelp">
+		</div>
+		<div class="mb-3">
+			<label for="description" class="form-label">Description</label>
+			<textarea type="text" class="form-control" name="job[description]" id="description" rows="5" cols="20"
+				aria-describedby="desHelp"></textarea>
+		</div>
+		<div class="mb-3">
+			<label for="location" class="form-label">Location:</label>
+			<input type="location" class="form-control" name="job[location]" id="location"
+				aria-describedby="locationHelp">
+			<div id="emailHelp" class="form-text">Please specify exact location and country.</div>
+		</div>
+		<div class="mb-3">
+			<label for="employer" class="form-label">Employer</label>
+			<input type="text" class="form-control" name="job[employer]" id="employer" aria-describedby="titleHelp">
+		</div>
+		<div class="mb-3">
+			<label for="numOfPos" class="form-label">Positions</label>
+			<input type="number" min="1" class="form-control" name="job[numOfPos]" id="numOfPos"
+				aria-describedby="titleHelp">
+		</div>
+		<div class="mb-3">
+			<label for="duration" class="form-label">Duration</label>
+			<input type="text" class="form-control" name="job[duration]" id="duration" aria-describedby="titleHelp">
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form>
+</div>
