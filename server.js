@@ -3,6 +3,8 @@ const path = require("path");
 const expresslayout = require("express-ejs-layouts");
 
 const connectDb = require("./utils/db");
+const AppEror = require("./utils/AppError");
+const decorateAsync = require("./utils/utils");
 const Job = require("./models/jobs.model");
 
 const app = express();
@@ -45,6 +47,21 @@ app.post("/jobs", async (req, res) => {
   const addJob = Job(job);
   await addJob.save();
   res.redirect("/jobs");
+});
+
+app.get("/error", (req, res) => {
+  throw new AppEror("This is an error route.", 500);
+});
+
+// Middleware for non-existing other routes
+app.use((req, res) => {
+  res.send("Not found");
+});
+
+// Custom error handling middleware
+app.use((err, req, res, next) => {
+  const { status = 500, message = "Something went wrong" } = err;
+  res.status(status).send({ "error message": message, status });
 });
 
 app.listen(PORT, () => {
