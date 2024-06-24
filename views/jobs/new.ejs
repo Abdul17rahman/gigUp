@@ -1,33 +1,71 @@
 <div class="container">
 	<h3>Post a new job</h3>
-	<form method="post" action="/jobs">
+	<form method="post" action="/jobs" class="validatedForm" novalidate>
 		<div class="mb-3">
 			<label for="title" class="form-label">Title</label>
-			<input type="text" class="form-control" name="job[title]" id="title" aria-describedby="titleHelp">
+			<input type="text" class="form-control" name="job[title]" id="title" aria-describedby="titleHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter job title.!
+			</div>
 		</div>
 		<div class="mb-3">
 			<label for="description" class="form-label">Description</label>
 			<textarea type="text" class="form-control" name="job[description]" id="description" rows="5" cols="20"
-				aria-describedby="desHelp"></textarea>
+				aria-describedby="desHelp" required></textarea>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter some description of the job.!
+			</div>
 		</div>
 		<div class="mb-3">
 			<label for="location" class="form-label">Location:</label>
 			<input type="location" class="form-control" name="job[location]" id="location"
-				aria-describedby="locationHelp">
+				aria-describedby="locationHelp" required>
 			<div id="emailHelp" class="form-text">Please specify exact location and country.</div>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please provide the job location.!
+			</div>
 		</div>
 		<div class="mb-3">
 			<label for="employer" class="form-label">Employer</label>
-			<input type="text" class="form-control" name="job[employer]" id="employer" aria-describedby="titleHelp">
+			<input type="text" class="form-control" name="job[employer]" id="employer" aria-describedby="empHelp"
+				required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Employer's name is required.!
+			</div>
 		</div>
 		<div class="mb-3">
 			<label for="numOfPos" class="form-label">Positions</label>
 			<input type="number" min="1" class="form-control" name="job[numOfPos]" id="numOfPos"
-				aria-describedby="titleHelp">
+				aria-describedby="posHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please fill in the available positions.!
+			</div>
 		</div>
 		<div class="mb-3">
 			<label for="duration" class="form-label">Duration</label>
-			<input type="text" class="form-control" name="job[duration]" id="duration" aria-describedby="titleHelp">
+			<input type="text" class="form-control" name="job[duration]" id="duration" aria-describedby="durationHelp"
+				required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter the job duration.!
+			</div>
 		</div>
 		<button type="submit" class="btn btn-primary">Submit</button>
 	</form>

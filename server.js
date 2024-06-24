@@ -24,6 +24,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(expresslayout);
 app.use(methodOverride("_method"));
 
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
   res.render("index");
 });

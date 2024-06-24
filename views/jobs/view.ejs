@@ -33,36 +33,72 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<form method="post" action="/jobs/<%= foundJob._id %>?_method=PUT">
+				<form method="post" action="/jobs/<%= foundJob._id %>?_method=PUT" class="validatedForm" novalidate>
 					<div class="mb-3">
 						<label for="title" class="form-label">Title</label>
 						<input type="text" class="form-control" name="job[title]" id="title"
-							value="<%= foundJob.title %>" aria-describedby="titleHelp">
+							value="<%= foundJob.title %>" aria-describedby="titleHelp" required>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+						<div class="invalid-feedback">
+							Please enter job title.!
+						</div>
 					</div>
 					<div class="mb-3">
 						<label for="description" class="form-label">Description</label>
 						<textarea type="text" class="form-control" name="job[description]" id="description" rows="3"
-							cols="20" aria-describedby="desHelp"><%= foundJob.description %></textarea>
+							cols="20" aria-describedby="desHelp" required><%= foundJob.description %></textarea>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+						<div class="invalid-feedback">
+							Please enter some description of the job.!
+						</div>
 					</div>
 					<div class="mb-3">
 						<label for="location" class="form-label">Location:</label>
 						<input type="location" class="form-control" name="job[location]" id="location"
-							value="<%= foundJob.location %>" aria-describedby="locationHelp">
+							value="<%= foundJob.location %>" aria-describedby="locationHelp" required>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+						<div class="invalid-feedback">
+							Please provide the job location.!
+						</div>
 					</div>
 					<div class="mb-3">
 						<label for="employer" class="form-label">Employer</label>
 						<input type="text" class="form-control" name="job[employer]" id="employer"
-							value="<%= foundJob.employer %>" aria-describedby="titleHelp">
+							value="<%= foundJob.employer %>" aria-describedby="empHelp" required>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+						<div class="invalid-feedback">
+							Employer's name is required.!
+						</div>
 					</div>
 					<div class="mb-3">
 						<label for="numOfPos" class="form-label">Positions</label>
 						<input type="number" class="form-control" name="job[numOfPos]" id="numOfPos" min="1"
-							value="<%= foundJob.numOfPos %>" aria-describedby="titleHelp">
+							value="<%= foundJob.numOfPos %>" aria-describedby="numOfPosHelp" required>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+						<div class="invalid-feedback">
+							Please fill in the available positions.!
+						</div>
 					</div>
 					<div class="mb-3">
 						<label for="duration" class="form-label">Duration</label>
 						<input type="text" class="form-control" name="job[duration]" id="duration"
-							value="<%= foundJob.duration %>" aria-describedby="titleHelp">
+							value="<%= foundJob.duration %>" aria-describedby="durationHelp" required>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+						<div class="invalid-feedback">
+							Please enter the job duration.!
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
