@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const methodOverride = require("method-override");
 const expresslayout = require("express-ejs-layouts");
 
 const connectDb = require("./utils/db");
@@ -21,47 +22,85 @@ app.set("layout", "partials/boilerPlate");
 // Use express middleware to parse form data.
 app.use(express.urlencoded({ extended: true }));
 app.use(expresslayout);
+app.use(methodOverride("_method"));
 
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get("/jobs", async (req, res) => {
-  const availableJobs = await Job.find({});
-  res.render("jobs/jobs", { availableJobs });
-});
+app.get(
+  "/jobs",
+  decorateAsync(async (req, res) => {
+    const availableJobs = await Job.find({});
+    if (!availableJobs) {
+      throw new AppEror("Sorry there are no jobs available.", 404);
+    }
+    res.render("jobs/jobs", { availableJobs });
+  })
+);
 
 app.get("/jobs/new", (req, res) => {
   res.render("jobs/new");
 });
 
-app.get("/jobs/:id", async (req, res) => {
-  const { id } = req.params;
-  const foundJob = await Job.findById(id);
-  res.render("jobs/view", { foundJob });
-});
+app.get(
+  "/jobs/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const foundJob = await Job.findById(id);
+    if (!foundJob) {
+      throw new AppEror(
+        "This job doesn't exist or it's already delisted.",
+        404
+      );
+    }
+    res.render("jobs/view", { foundJob });
+  })
+);
 
-app.post("/jobs", async (req, res) => {
-  const { job } = req.body;
-  job.created_date = Date.now().toString();
-  const addJob = Job(job);
-  await addJob.save();
-  res.redirect("/jobs");
-});
+app.post(
+  "/jobs",
+  decorateAsync(async (req, res) => {
+    const { job } = req.body;
+    job.created_date = Date.now().toString();
+    const addJob = Job(job);
+    await addJob.save();
+    res.redirect("/jobs");
+  })
+);
 
-app.get("/error", (req, res) => {
-  throw new AppEror("This is an error route.", 500);
-});
+app.put(
+  "/jobs/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const { job } = req.body;
+    const editJob = await Job.findByIdAndUpdate(id, job);
+    res.redirect(`/jobs/${id}`);
+  })
+);
+
+app.delete(
+  "/jobs/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const del = await Job.findByIdAndDelete(id);
+    res.redirect("/jobs");
+  })
+);
 
 // Middleware for non-existing other routes
 app.use((req, res) => {
-  res.send("Not found");
+  res.status(404);
+  res.render("error", {
+    message: "Sorry, we can't find what you're looking for.!",
+  });
 });
 
 // Custom error handling middleware
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Something went wrong" } = err;
-  res.status(status).send({ "error message": message, status });
+  const { status = 500, message = "Something went wrong.!" } = err;
+  res.status(status);
+  res.render("error", { message });
 });
 
 app.listen(PORT, () => {
