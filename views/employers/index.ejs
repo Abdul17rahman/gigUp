@@ -1,0 +1,12 @@
+<div class="container-fluid">
+	<h2>Available employers</h2>
+	<ul>
+		<% for (let emp of employers){ %>
+			<li>
+				<a href="/employers/<%= emp._id %>">
+					<%= emp.username %>
+				</a>
+			</li>
+			<% } %>
+	</ul>
+</div>

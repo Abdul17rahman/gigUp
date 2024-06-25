@@ -8,6 +8,7 @@ const AppEror = require("./utils/AppError");
 const decorateAsync = require("./utils/utils");
 const Job = require("./models/jobs.model");
 const validateJob = require("./middlewares");
+const Employer = require("./models/emp.model");
 
 const app = express();
 connectDb("gigUp");
@@ -51,7 +52,7 @@ app.get(
   "/jobs/:id",
   decorateAsync(async (req, res) => {
     const { id } = req.params;
-    const foundJob = await Job.findById(id);
+    const foundJob = await Job.findById(id).populate("employer", "company");
     if (!foundJob) {
       throw new AppEror(
         "This job doesn't exist or it's already delisted.",
@@ -62,17 +63,17 @@ app.get(
   })
 );
 
-app.post(
-  "/jobs",
-  validateJob,
-  decorateAsync(async (req, res) => {
-    const { job } = req.body;
-    job.created_date = Date.now().toString();
-    const addJob = Job(job);
-    await addJob.save();
-    res.redirect("/jobs");
-  })
-);
+// app.post(
+//   "/jobs",
+//   validateJob,
+//   decorateAsync(async (req, res) => {
+//     const { job } = req.body;
+//     job.created_date = Date.now().toString();
+//     const addJob = new Job(job);
+//     await addJob.save();
+//     res.redirect("/jobs");
+//   })
+// );
 
 app.put(
   "/jobs/:id",
@@ -91,6 +92,61 @@ app.delete(
     const { id } = req.params;
     const del = await Job.findByIdAndDelete(id);
     res.redirect("/jobs");
+  })
+);
+
+// Employer routes.
+app.get("/employers", async (req, res) => {
+  const employers = await Employer.find({});
+  res.render("employers/index", { employers });
+});
+
+app.get("/employers/register", (req, res) => {
+  res.render("employers/register");
+});
+
+app.get("/employers/:id", async (req, res) => {
+  const { id } = req.params;
+  const foundEmp = await Employer.findById(id).populate("jobs");
+  if (!foundEmp) {
+    throw new AppEror("Employer doesn't exist in our database.!", 400);
+  }
+  res.render("employers/show", { employer: foundEmp });
+});
+
+app.post("/employers", async (req, res) => {
+  const { emp } = req.body;
+  const newEmp = new Employer(emp);
+  await newEmp.save();
+  res.redirect(`/employers/${newEmp._id}`);
+});
+
+app.delete("/employers/:id", async (req, res) => {
+  const { id } = req.params;
+  const delUser = await Employer.findByIdAndDelete(id);
+  res.redirect("/");
+});
+
+// post a job.
+app.get("/employers/:id/jobs/new", (req, res) => {
+  const { id } = req.params;
+  res.render("jobs/new", { id });
+});
+
+app.post(
+  "/employers/:id/jobs",
+  validateJob,
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const employer = await Employer.findById(id);
+    const { job } = req.body;
+    job.created_date = Date.now().toString();
+    const addJob = new Job(job);
+    employer.jobs.push(addJob);
+    addJob.employer = employer;
+    await employer.save();
+    await addJob.save();
+    res.redirect(`/employers/${employer._id}`);
   })
 );
 

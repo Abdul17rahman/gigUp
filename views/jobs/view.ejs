@@ -3,7 +3,9 @@
 	</h4>
 	<p>Description: <%= foundJob.description %>
 	</p>
-	<p>Employer: <%= foundJob.employer %>
+	<p>Employer: <% if (foundJob.employer) {%>
+			<%= foundJob.employer.company %>
+				<% } %>
 	</p>
 	<p>Location: <%= foundJob.location %>
 	</p>
@@ -67,17 +69,7 @@
 							Please provide the job location.!
 						</div>
 					</div>
-					<div class="mb-3">
-						<label for="employer" class="form-label">Employer</label>
-						<input type="text" class="form-control" name="job[employer]" id="employer"
-							value="<%= foundJob.employer %>" aria-describedby="empHelp" required>
-						<div class="valid-feedback">
-							Looks good!
-						</div>
-						<div class="invalid-feedback">
-							Employer's name is required.!
-						</div>
-					</div>
+
 					<div class="mb-3">
 						<label for="numOfPos" class="form-label">Positions</label>
 						<input type="number" class="form-control" name="job[numOfPos]" id="numOfPos" min="1"

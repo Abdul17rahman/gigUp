@@ -1,0 +1,66 @@
+<div class="container">
+	<h3>Employer's signup page.</h3>
+	<form method="post" action="/employers" class="validatedForm" novalidate>
+		<div class="mb-3">
+			<label for="username" class="form-label">Username:</label>
+			<input type="text" class="form-control" name="emp[username]" id="username" aria-describedby="usernameHelp"
+				required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter your username.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="company" class="form-label">Company Name:</label>
+			<input type="text" class="form-control" name="emp[company]" id="company" aria-describedby="companyHelp">
+			<div id="companyHelp" class="form-text">This field is optional.</div>
+		</div>
+		<div class="mb-3">
+			<label for="location" class="form-label">Location:</label>
+			<input type="location" class="form-control" name="emp[location]" id="location"
+				aria-describedby="locationHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please provide your location.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="email" class="form-label">Email:</label>
+			<input type="text" class="form-control" name="emp[email]" id="email" aria-describedby="empHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Employer's email is required.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="password" class="form-label">Password:</label>
+			<input type="password" class="form-control" name="emp[password]" id="password"
+				aria-describedby="passwordHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter your password.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="contact" class="form-label">Contact:</label>
+			<input type="text" class="form-control" name="emp[contact]" id="contact" aria-describedby="contactHelp"
+				required>
+			<div id="contactHelp" class="form-text">It will only be shared with succesfull candidates.</div>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter your contact.!
+			</div>
+		</div>
+		<button type="submit" class="btn btn-primary">SignUp</button>
+	</form>
+</div>

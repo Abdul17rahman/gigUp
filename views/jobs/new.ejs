@@ -1,6 +1,6 @@
 <div class="container">
 	<h3>Post a new job</h3>
-	<form method="post" action="/jobs" class="validatedForm" novalidate>
+	<form method="post" action="/employers/<%= id %>/jobs" class="validatedForm" novalidate>
 		<div class="mb-3">
 			<label for="title" class="form-label">Title</label>
 			<input type="text" class="form-control" name="job[title]" id="title" aria-describedby="titleHelp" required>
@@ -34,7 +34,7 @@
 				Please provide the job location.!
 			</div>
 		</div>
-		<div class="mb-3">
+		<!-- <div class="mb-3">
 			<label for="employer" class="form-label">Employer</label>
 			<input type="text" class="form-control" name="job[employer]" id="employer" aria-describedby="empHelp"
 				required>
@@ -44,7 +44,7 @@
 			<div class="invalid-feedback">
 				Employer's name is required.!
 			</div>
-		</div>
+		</div> -->
 		<div class="mb-3">
 			<label for="numOfPos" class="form-label">Positions</label>
 			<input type="number" min="1" class="form-control" name="job[numOfPos]" id="numOfPos"
