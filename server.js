@@ -7,6 +7,7 @@ const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
 const decorateAsync = require("./utils/utils");
 const Job = require("./models/jobs.model");
+const validateJob = require("./middlewares");
 
 const app = express();
 connectDb("gigUp");
@@ -63,6 +64,7 @@ app.get(
 
 app.post(
   "/jobs",
+  validateJob,
   decorateAsync(async (req, res) => {
     const { job } = req.body;
     job.created_date = Date.now().toString();
@@ -74,6 +76,7 @@ app.post(
 
 app.put(
   "/jobs/:id",
+  validateJob,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const { job } = req.body;
@@ -93,17 +96,14 @@ app.delete(
 
 // Middleware for non-existing other routes
 app.use((req, res) => {
-  res.status(404);
-  res.render("error", {
-    message: "Sorry, we can't find what you're looking for.!",
-  });
+  throw new AppEror("Page or resource not found.!", 400);
 });
 
 // Custom error handling middleware
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Something went wrong.!" } = err;
+  const { status = 500, message = "Something went wrong.!", stack } = err;
   res.status(status);
-  res.render("error", { message });
+  res.render("error", { message, stack });
 });
 
 app.listen(PORT, () => {
