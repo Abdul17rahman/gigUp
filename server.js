@@ -2,10 +2,12 @@ const express = require("express");
 const path = require("path");
 const methodOverride = require("method-override");
 const expresslayout = require("express-ejs-layouts");
+const bcrypt = require("bcrypt");
+const session = require("express-session");
 
 const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
-const decorateAsync = require("./utils/utils");
+const { decorateAsync, encryptPassword } = require("./utils/utils");
 const Job = require("./models/jobs.model");
 const { validate } = require("./middlewares");
 const Employer = require("./models/emp.model");
@@ -14,6 +16,15 @@ const User = require("./models/user.model");
 const app = express();
 connectDb("gigUp");
 const PORT = process.env.PORT || 3000;
+
+// Use session
+app.use(
+  session({
+    secret: "mysecret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // setup the views directory and ejs
 app.set("view engine", "ejs");
@@ -93,6 +104,10 @@ app.get("/employers/register", (req, res) => {
   res.render("employers/register");
 });
 
+app.get("/employers/login", (req, res) => {
+  res.render("employers/login");
+});
+
 app.get(
   "/employers/:id",
   decorateAsync(async (req, res) => {
@@ -110,11 +125,33 @@ app.post(
   validate("emp"),
   decorateAsync(async (req, res) => {
     const { emp } = req.body;
-    const newEmp = new Employer(emp);
+    const employer = await encryptPassword(emp);
+    const newEmp = new Employer(employer);
     await newEmp.save();
-    res.redirect(`/employers/${newEmp._id}`);
+    res.redirect("/employers/login");
   })
 );
+
+app.post("/employers/login", async (req, res) => {
+  const { emp } = req.body;
+  const employer = await Employer.findOne({ email: emp.email });
+  if (!employer) {
+    throw new AppEror("We can't find employer with that email.!", 400);
+  }
+  const verified = await bcrypt.compare(emp.password, employer.password);
+
+  if (verified) {
+    req.session.employer = employer;
+    res.redirect(`/employers/${employer._id}`);
+  } else {
+    throw new AppEror("Wrong credentials.!", 404);
+  }
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
 
 app.delete(
   "/employers/:id",
@@ -153,6 +190,23 @@ app.get("/register", (req, res) => {
   res.render("users/register");
 });
 
+app.get("/users/login", (req, res) => {
+  res.render("users/login");
+});
+
+app.get(
+  "/user/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const foundUser = await User.findById(id);
+    res.render("users/show", { foundUser });
+  })
+);
+
+app.post("/users/login", (req, res) => {
+  res.redirect("/user/:id");
+});
+
 app.post(
   "/register",
   validate("user"),
@@ -161,15 +215,6 @@ app.post(
     const newUser = new User(user);
     await newUser.save();
     res.redirect(`/user/${newUser._id}`);
-  })
-);
-
-app.get(
-  "/user/:id",
-  decorateAsync(async (req, res) => {
-    const { id } = req.params;
-    const foundUser = await User.findById(id);
-    res.render("users/show", { foundUser });
   })
 );
 

@@ -18,6 +18,7 @@ const employerSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -28,7 +29,7 @@ const employerSchema = new Schema({
   },
   jobs: [{ type: Schema.Types.ObjectId, ref: "Job" }],
   reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
-  applications: [{ type: Schema.Types.ObjectId, ref: "Application" }],
+  contracts: [{ type: Schema.Types.ObjectId, ref: "Contract" }],
 });
 
 employerSchema.post("findOneAndDelete", async function (emp) {

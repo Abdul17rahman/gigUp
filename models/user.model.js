@@ -9,6 +9,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -24,10 +25,10 @@ const userSchema = new Schema({
       ref: "Review",
     },
   ],
-  offers: [
+  contracts: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Offer",
+      ref: "Contract",
     },
   ],
   proposals: [

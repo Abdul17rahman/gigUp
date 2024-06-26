@@ -1,0 +1,28 @@
+<div class="container">
+	<h3>Employer Login.</h3>
+	<form method="post" action="/employers/login" class="validatedForm" novalidate>
+		<div class="mb-3">
+			<label for="email" class="form-label">Email:</label>
+			<input type="text" class="form-control" name="emp[email]" id="email" aria-describedby="emailHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter your email.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="password" class="form-label">Password:</label>
+			<input type="password" class="form-control" name="emp[password]" id="password"
+				aria-describedby="passwordHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please provide your password.!
+			</div>
+		</div>
+
+		<button type="submit" class="btn btn-primary">Login</button>
+	</form>
+</div>

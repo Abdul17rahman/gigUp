@@ -19,8 +19,10 @@
 	<% if (employer.jobs.length){ %>
 		<ul>
 			<% for (let job of employer.jobs){ %>
-				<%= job.title %>
-					<% } %>
+				<li>
+					<%= job.title %>
+				</li>
+				<% } %>
 		</ul>
 		<% } else { %>
 			<p>You haven't posted any job yet.!</p>

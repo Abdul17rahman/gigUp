@@ -7,20 +7,34 @@ const jobSchema = Joi.object({
   location: Joi.string().required(),
   duration: Joi.string().required(),
   numOfPos: Joi.number().min(1).required(),
-}).required();
+})
+  .required()
+  .messages({
+    "any.required": "Job data is missing.",
+  });
 
 const employerSchema = Joi.object({
   username: Joi.string().required(),
+  company: Joi.string(),
   location: Joi.string().required(),
   email: Joi.string().required(),
+  contact: Joi.string(),
   password: Joi.string().required(),
-}).required();
+})
+  .required()
+  .messages({
+    "any.required": "Employer data is missing.",
+  });
 
 const userSchema = Joi.object({
   username: Joi.string().required(),
   email: Joi.string().required(),
   password: Joi.string().required(),
   bio: Joi.string().required(),
-}).required();
+})
+  .required()
+  .messages({
+    "any.required": "User data is missing.",
+  });
 
 module.exports = { jobSchema, employerSchema, userSchema };
