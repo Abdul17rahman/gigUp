@@ -9,4 +9,11 @@ const jobSchema = Joi.object({
   numOfPos: Joi.number().min(1).required(),
 }).required();
 
-module.exports = jobSchema;
+const employerSchema = Joi.object({
+  username: Joi.string().required(),
+  location: Joi.string().required(),
+  email: Joi.string().required(),
+  password: Joi.string().required(),
+}).required();
+
+module.exports = { jobSchema, employerSchema };

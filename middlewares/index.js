@@ -1,4 +1,4 @@
-const jobSchema = require("../utils/clientValidation");
+const { jobSchema, employerSchema } = require("../utils/clientValidation");
 const AppEror = require("../utils/AppError");
 
 function validateJob(req, res, next) {
@@ -13,4 +13,15 @@ function validateJob(req, res, next) {
   }
 }
 
-module.exports = validateJob;
+function validateEmployer(req, res, next) {
+  const { error } = employerSchema.validate(req.body.emp);
+  if (error) {
+    // Extract message from the error object
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new AppEror(msg, 400);
+  } else {
+    next();
+  }
+}
+
+module.exports = { validateJob, validateEmployer };

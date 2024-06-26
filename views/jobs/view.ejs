@@ -19,7 +19,7 @@
 	</p>
 	<a href="/jobs" class="btn btn-info">Back</a>
 	<a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
-	<form method="post" action="/jobs/<%= foundJob._id %>?_method=DELETE">
+	<form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=DELETE">
 		<button type="submit" class="btn btn-danger">Delete</button>
 	</form>
 	<a href="/apply" class="btn btn-success">Apply</a>
@@ -35,7 +35,9 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<form method="post" action="/jobs/<%= foundJob._id %>?_method=PUT" class="validatedForm" novalidate>
+				<form method="post"
+					action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=PUT"
+					class="validatedForm" novalidate>
 					<div class="mb-3">
 						<label for="title" class="form-label">Title</label>
 						<input type="text" class="form-control" name="job[title]" id="title"

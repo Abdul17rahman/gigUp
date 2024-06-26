@@ -7,7 +7,7 @@ const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
 const decorateAsync = require("./utils/utils");
 const Job = require("./models/jobs.model");
-const validateJob = require("./middlewares");
+const { validateJob, validateEmployer } = require("./middlewares");
 const Employer = require("./models/emp.model");
 
 const app = express();
@@ -44,15 +44,11 @@ app.get(
   })
 );
 
-app.get("/jobs/new", (req, res) => {
-  res.render("jobs/new");
-});
-
 app.get(
   "/jobs/:id",
   decorateAsync(async (req, res) => {
     const { id } = req.params;
-    const foundJob = await Job.findById(id).populate("employer", "company");
+    const foundJob = await Job.findById(id).populate("employer");
     if (!foundJob) {
       throw new AppEror(
         "This job doesn't exist or it's already delisted.",
@@ -63,20 +59,8 @@ app.get(
   })
 );
 
-// app.post(
-//   "/jobs",
-//   validateJob,
-//   decorateAsync(async (req, res) => {
-//     const { job } = req.body;
-//     job.created_date = Date.now().toString();
-//     const addJob = new Job(job);
-//     await addJob.save();
-//     res.redirect("/jobs");
-//   })
-// );
-
 app.put(
-  "/jobs/:id",
+  "/employers/:empId/jobs/:id",
   validateJob,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
@@ -87,45 +71,59 @@ app.put(
 );
 
 app.delete(
-  "/jobs/:id",
+  "/employers/:empId/jobs/:jobId",
   decorateAsync(async (req, res) => {
-    const { id } = req.params;
-    const del = await Job.findByIdAndDelete(id);
+    // const { empId } = req.params;
+    const { jobId } = req.params;
+    const del = await Job.findByIdAndDelete(jobId);
     res.redirect("/jobs");
   })
 );
 
 // Employer routes.
-app.get("/employers", async (req, res) => {
-  const employers = await Employer.find({});
-  res.render("employers/index", { employers });
-});
+app.get(
+  "/employers",
+  decorateAsync(async (req, res) => {
+    const employers = await Employer.find({});
+    res.render("employers/index", { employers });
+  })
+);
 
 app.get("/employers/register", (req, res) => {
   res.render("employers/register");
 });
 
-app.get("/employers/:id", async (req, res) => {
-  const { id } = req.params;
-  const foundEmp = await Employer.findById(id).populate("jobs");
-  if (!foundEmp) {
-    throw new AppEror("Employer doesn't exist in our database.!", 400);
-  }
-  res.render("employers/show", { employer: foundEmp });
-});
+app.get(
+  "/employers/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const foundEmp = await Employer.findById(id).populate("jobs");
+    if (!foundEmp) {
+      throw new AppEror("Employer doesn't exist in our database.!", 400);
+    }
+    res.render("employers/show", { employer: foundEmp });
+  })
+);
 
-app.post("/employers", async (req, res) => {
-  const { emp } = req.body;
-  const newEmp = new Employer(emp);
-  await newEmp.save();
-  res.redirect(`/employers/${newEmp._id}`);
-});
+app.post(
+  "/employers",
+  validateEmployer,
+  decorateAsync(async (req, res) => {
+    const { emp } = req.body;
+    const newEmp = new Employer(emp);
+    await newEmp.save();
+    res.redirect(`/employers/${newEmp._id}`);
+  })
+);
 
-app.delete("/employers/:id", async (req, res) => {
-  const { id } = req.params;
-  const delUser = await Employer.findByIdAndDelete(id);
-  res.redirect("/");
-});
+app.delete(
+  "/employers/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const delUser = await Employer.findByIdAndDelete(id);
+    res.redirect("/");
+  })
+);
 
 // post a job.
 app.get("/employers/:id/jobs/new", (req, res) => {

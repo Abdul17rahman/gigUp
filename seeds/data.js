@@ -1,8 +1,11 @@
+const mongoose = require("mongoose");
+const Schema = mongoose;
+
 const availableJobs = [
   {
     title: "Software Engineer",
     description: "This is specific to backend development with nodejs",
-    employer: "ASG",
+    employer: new Schema.Types.ObjectId("667b21943f33e80e991602d4"),
     location: "Kampala-Uganda",
     created_date: Date.now().toString(),
     numOfPos: 4,
@@ -12,7 +15,7 @@ const availableJobs = [
   {
     title: "Accountant",
     description: "We're looking for a proffessional ACP accountant.",
-    employer: "AR Tech",
+    employer: new Schema.Types.ObjectId("667b21bb3f33e80e991602d7"),
     location: "Nairobi Kenya",
     created_date: Date.now().toString(),
     numOfPos: 1,
@@ -22,7 +25,7 @@ const availableJobs = [
   {
     title: "Sales",
     description: "Door to door sells person.",
-    employer: "AWG",
+    employer: new Schema.Types.ObjectId("667b21bb3f33e80e991602d7"),
     location: "Kampala-Uganda",
     created_date: Date.now().toString(),
     numOfPos: 5,
@@ -32,7 +35,7 @@ const availableJobs = [
   {
     title: "Driver",
     description: "Light weight vehicle driver for our CEO",
-    employer: "MTN",
+    employer: new Schema.Types.ObjectId("667b21bb3f33e80e991602d7"),
     location: "Kampala-Uganda",
     created_date: Date.now().toString(),
     numOfPos: 5,
@@ -43,7 +46,7 @@ const availableJobs = [
     title: "Data Engineer",
     description:
       "Preferably a data scientist who is familiar with data collection",
-    employer: "AAR",
+    employer: new Schema.Types.ObjectId("667b21943f33e80e991602d4"),
     location: "Dar Tanzania",
     created_date: Date.now().toString(),
     numOfPos: 2,
@@ -53,7 +56,7 @@ const availableJobs = [
   {
     title: "Electrical Engineer",
     description: "Specific to indoor installation and cabling.",
-    employer: "Apple",
+    employer: new Schema.Types.ObjectId("667b21943f33e80e991602d4"),
     location: "Kampala-Uganda",
     created_date: Date.now().toString(),
     numOfPos: 4,
