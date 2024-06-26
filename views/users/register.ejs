@@ -1,0 +1,49 @@
+<div class="container">
+	<h3>Signup here for your next gig.</h3>
+	<form method="post" action="/register" class="validatedForm" novalidate>
+		<div class="mb-3">
+			<label for="username" class="form-label">Username:</label>
+			<input type="text" class="form-control" name="user[username]" id="username" aria-describedby="usernameHelp"
+				required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter your username.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="email" class="form-label">Email:</label>
+			<input type="text" class="form-control" name="user[email]" id="email" aria-describedby="emailHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please provide an email address.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="password" class="form-label">Password:</label>
+			<input type="password" class="form-control" name="user[password]" id="password"
+				aria-describedby="passwordHelp" required>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please provide your password.!
+			</div>
+		</div>
+		<div class="mb-3">
+			<label for="bio" class="form-label">Short Bio:</label>
+			<textarea type="text" class="form-control" name="user[bio]" id="bio" rows="4" cols="20"
+				aria-describedby="bioHelp" required></textarea>
+			<div class="valid-feedback">
+				Looks good!
+			</div>
+			<div class="invalid-feedback">
+				Please enter a short bio about yourself.!
+			</div>
+		</div>
+		<button type="submit" class="btn btn-primary">SignUp</button>
+	</form>
+</div>

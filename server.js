@@ -7,8 +7,9 @@ const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
 const decorateAsync = require("./utils/utils");
 const Job = require("./models/jobs.model");
-const { validateJob, validateEmployer } = require("./middlewares");
+const { validate } = require("./middlewares");
 const Employer = require("./models/emp.model");
+const User = require("./models/user.model");
 
 const app = express();
 connectDb("gigUp");
@@ -61,7 +62,7 @@ app.get(
 
 app.put(
   "/employers/:empId/jobs/:id",
-  validateJob,
+  validate("job"),
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const { job } = req.body;
@@ -73,7 +74,6 @@ app.put(
 app.delete(
   "/employers/:empId/jobs/:jobId",
   decorateAsync(async (req, res) => {
-    // const { empId } = req.params;
     const { jobId } = req.params;
     const del = await Job.findByIdAndDelete(jobId);
     res.redirect("/jobs");
@@ -107,7 +107,7 @@ app.get(
 
 app.post(
   "/employers",
-  validateEmployer,
+  validate("emp"),
   decorateAsync(async (req, res) => {
     const { emp } = req.body;
     const newEmp = new Employer(emp);
@@ -133,7 +133,7 @@ app.get("/employers/:id/jobs/new", (req, res) => {
 
 app.post(
   "/employers/:id/jobs",
-  validateJob,
+  validate("job"),
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const employer = await Employer.findById(id);
@@ -145,6 +145,53 @@ app.post(
     await employer.save();
     await addJob.save();
     res.redirect(`/employers/${employer._id}`);
+  })
+);
+
+// Users routes
+app.get("/register", (req, res) => {
+  res.render("users/register");
+});
+
+app.post(
+  "/register",
+  validate("user"),
+  decorateAsync(async (req, res) => {
+    const { user } = req.body;
+    const newUser = new User(user);
+    await newUser.save();
+    res.redirect(`/user/${newUser._id}`);
+  })
+);
+
+app.get(
+  "/user/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const foundUser = await User.findById(id);
+    res.render("users/show", { foundUser });
+  })
+);
+
+app.put(
+  "/user/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const { user } = req.body;
+    const foundUser = await User.findByIdAndUpdate(id, {
+      email: user["email"],
+      bio: user["bio"],
+    });
+    res.redirect(`/user/${foundUser._id}`);
+  })
+);
+
+app.delete(
+  "/user/:id",
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const delUser = await User.findByIdAndDelete(id);
+    res.redirect("/jobs");
   })
 );
 
