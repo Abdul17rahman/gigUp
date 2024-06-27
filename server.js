@@ -4,6 +4,7 @@ const methodOverride = require("method-override");
 const expresslayout = require("express-ejs-layouts");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
@@ -25,6 +26,14 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 // setup the views directory and ejs
 app.set("view engine", "ejs");
@@ -78,6 +87,7 @@ app.put(
     const { id } = req.params;
     const { job } = req.body;
     const editJob = await Job.findByIdAndUpdate(id, job);
+    req.flash("success", `Successfully edited ${job.title}`);
     res.redirect(`/jobs/${id}`);
   })
 );
@@ -87,6 +97,7 @@ app.delete(
   decorateAsync(async (req, res) => {
     const { jobId } = req.params;
     const del = await Job.findByIdAndDelete(jobId);
+    req.flash("success", "Job deleted successfully.");
     res.redirect("/jobs");
   })
 );
@@ -128,25 +139,32 @@ app.post(
     const employer = await encryptPassword(emp);
     const newEmp = new Employer(employer);
     await newEmp.save();
+    req.flash("success", "Employer account succesfully created.!");
     res.redirect("/employers/login");
   })
 );
 
-app.post("/employers/login", async (req, res) => {
-  const { emp } = req.body;
-  const employer = await Employer.findOne({ email: emp.email });
-  if (!employer) {
-    throw new AppEror("We can't find employer with that email.!", 400);
-  }
-  const verified = await bcrypt.compare(emp.password, employer.password);
+app.post(
+  "/employers/login",
+  decorateAsync(async (req, res) => {
+    const { emp } = req.body;
+    const employer = await Employer.findOne({ email: emp.email });
+    if (!employer) {
+      req.flash("error", "Sorry, we can't find this user.!");
+      return res.redirect("/employers/login");
+    }
+    const verified = await bcrypt.compare(emp.password, employer.password);
 
-  if (verified) {
-    req.session.employer = employer;
-    res.redirect(`/employers/${employer._id}`);
-  } else {
-    throw new AppEror("Wrong credentials.!", 404);
-  }
-});
+    if (verified) {
+      req.session.employer = employer;
+      req.flash("success", "Welcome Back.");
+      res.redirect(`/employers/${employer._id}`);
+    } else {
+      req.flash("error", "Invalid credentials, Please try again.");
+      res.redirect("/employers/login");
+    }
+  })
+);
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
@@ -158,6 +176,7 @@ app.delete(
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const delUser = await Employer.findByIdAndDelete(id);
+    req.flash("success", "Account deleted succcessfully.");
     res.redirect("/");
   })
 );
@@ -181,6 +200,7 @@ app.post(
     addJob.employer = employer;
     await employer.save();
     await addJob.save();
+    req.flash("success", "Succcessfully posted job..");
     res.redirect(`/employers/${employer._id}`);
   })
 );
@@ -199,12 +219,29 @@ app.get(
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const foundUser = await User.findById(id);
+    if (!foundUser) {
+      req.flash("error", "User account doesn't exit!.");
+      return res.redirect("/register");
+    }
     res.render("users/show", { foundUser });
   })
 );
 
-app.post("/users/login", (req, res) => {
-  res.redirect("/user/:id");
+app.post("/users/login", async (req, res) => {
+  const { user } = req.body;
+  const foundUser = await User.findOne({ email: user.email });
+  if (!foundUser) {
+    req.flash("error", "Sorry, this user doesn't exist.");
+    return res.redirect("/users/login");
+  }
+  const verified = await bcrypt.compare(user.password, foundUser.password);
+  if (verified) {
+    req.session.user = foundUser;
+    res.redirect(`/user/${foundUser._id}`);
+  } else {
+    req.flash("success", "Invalid credentials.");
+    res.redirect("/users/login");
+  }
 });
 
 app.post(
@@ -212,9 +249,11 @@ app.post(
   validate("user"),
   decorateAsync(async (req, res) => {
     const { user } = req.body;
-    const newUser = new User(user);
+    const encUser = await encryptPassword(user);
+    const newUser = new User(encUser);
     await newUser.save();
-    res.redirect(`/user/${newUser._id}`);
+    req.flash("success", "Account created succcessfully.");
+    res.redirect(`/users/login`);
   })
 );
 
@@ -227,6 +266,7 @@ app.put(
       email: user["email"],
       bio: user["bio"],
     });
+    req.flash("success", "Account edited succcessfully.");
     res.redirect(`/user/${foundUser._id}`);
   })
 );
@@ -236,6 +276,7 @@ app.delete(
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const delUser = await User.findByIdAndDelete(id);
+    req.flash("success", "Account deleted succcessfully.");
     res.redirect("/jobs");
   })
 );
