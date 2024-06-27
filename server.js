@@ -10,7 +10,13 @@ const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
 const { decorateAsync, encryptPassword } = require("./utils/utils");
 const Job = require("./models/jobs.model");
-const { validate } = require("./middlewares");
+const {
+  validate,
+  authenticateEmp,
+  authenticateUser,
+  isEmployer,
+  isUser,
+} = require("./middlewares");
 const Employer = require("./models/emp.model");
 const User = require("./models/user.model");
 
@@ -24,6 +30,7 @@ app.use(
     secret: "mysecret",
     resave: false,
     saveUninitialized: false,
+    cookie: { maxAge: 60000 },
   })
 );
 
@@ -32,6 +39,8 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.employer = req.session.employer || null;
+  res.locals.user = req.session.user || null;
   next();
 });
 
@@ -71,10 +80,8 @@ app.get(
     const { id } = req.params;
     const foundJob = await Job.findById(id).populate("employer");
     if (!foundJob) {
-      throw new AppEror(
-        "This job doesn't exist or it's already delisted.",
-        404
-      );
+      req.flash("error", "This job was delisted or taken already.!");
+      return res.redirect("/jobs");
     }
     res.render("jobs/view", { foundJob });
   })
@@ -82,6 +89,8 @@ app.get(
 
 app.put(
   "/employers/:empId/jobs/:id",
+  authenticateEmp,
+  isEmployer,
   validate("job"),
   decorateAsync(async (req, res) => {
     const { id } = req.params;
@@ -94,6 +103,8 @@ app.put(
 
 app.delete(
   "/employers/:empId/jobs/:jobId",
+  authenticateEmp,
+  isEmployer,
   decorateAsync(async (req, res) => {
     const { jobId } = req.params;
     const del = await Job.findByIdAndDelete(jobId);
@@ -103,13 +114,13 @@ app.delete(
 );
 
 // Employer routes.
-app.get(
-  "/employers",
-  decorateAsync(async (req, res) => {
-    const employers = await Employer.find({});
-    res.render("employers/index", { employers });
-  })
-);
+// app.get(
+//   "/employers",
+//   decorateAsync(async (req, res) => {
+//     const employers = await Employer.find({});
+//     res.render("employers/index", { employers });
+//   })
+// );
 
 app.get("/employers/register", (req, res) => {
   res.render("employers/register");
@@ -119,8 +130,11 @@ app.get("/employers/login", (req, res) => {
   res.render("employers/login");
 });
 
+// employer's profile
 app.get(
   "/employers/:id",
+  authenticateEmp,
+  isEmployer,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const foundEmp = await Employer.findById(id).populate("jobs");
@@ -131,6 +145,7 @@ app.get(
   })
 );
 
+// post req to add a new employer
 app.post(
   "/employers",
   validate("emp"),
@@ -144,20 +159,21 @@ app.post(
   })
 );
 
+// post req to login as an employer
 app.post(
   "/employers/login",
   decorateAsync(async (req, res) => {
     const { emp } = req.body;
     const employer = await Employer.findOne({ email: emp.email });
     if (!employer) {
-      req.flash("error", "Sorry, we can't find this user.!");
+      req.flash("error", "Invalid credentials, Please try again.");
       return res.redirect("/employers/login");
     }
     const verified = await bcrypt.compare(emp.password, employer.password);
 
     if (verified) {
       req.session.employer = employer;
-      req.flash("success", "Welcome Back.");
+      req.flash("success", `Welcome back ${employer.username}.`);
       res.redirect(`/employers/${employer._id}`);
     } else {
       req.flash("error", "Invalid credentials, Please try again.");
@@ -166,13 +182,17 @@ app.post(
   })
 );
 
-app.get("/logout", (req, res) => {
+// post request to logout - generic
+app.post("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
 
+// del route to delete employer
 app.delete(
   "/employers/:id",
+  authenticateEmp,
+  isEmployer,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const delUser = await Employer.findByIdAndDelete(id);
@@ -181,14 +201,17 @@ app.delete(
   })
 );
 
-// post a job.
-app.get("/employers/:id/jobs/new", (req, res) => {
+// post to add new a job.
+app.get("/employers/:id/jobs/new", authenticateEmp, isEmployer, (req, res) => {
   const { id } = req.params;
   res.render("jobs/new", { id });
 });
 
+// post route to add a new job
 app.post(
   "/employers/:id/jobs",
+  authenticateEmp,
+  isEmployer,
   validate("job"),
   decorateAsync(async (req, res) => {
     const { id } = req.params;
@@ -214,8 +237,11 @@ app.get("/users/login", (req, res) => {
   res.render("users/login");
 });
 
+// view user profile
 app.get(
   "/user/:id",
+  authenticateUser,
+  isUser,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const foundUser = await User.findById(id);
@@ -227,23 +253,26 @@ app.get(
   })
 );
 
+// post req to login as user
 app.post("/users/login", async (req, res) => {
   const { user } = req.body;
   const foundUser = await User.findOne({ email: user.email });
   if (!foundUser) {
-    req.flash("error", "Sorry, this user doesn't exist.");
+    req.flash("error", "Invalid credentials, Please try again.");
     return res.redirect("/users/login");
   }
   const verified = await bcrypt.compare(user.password, foundUser.password);
   if (verified) {
     req.session.user = foundUser;
+    req.flash("success", `Welcome back ${foundUser.username}`);
     res.redirect(`/user/${foundUser._id}`);
   } else {
-    req.flash("success", "Invalid credentials.");
+    req.flash("error", "Invalid credentials, Please try again.");
     res.redirect("/users/login");
   }
 });
 
+// post route to register new user
 app.post(
   "/register",
   validate("user"),
@@ -257,8 +286,11 @@ app.post(
   })
 );
 
+// put route to edit user profile
 app.put(
   "/user/:id",
+  authenticateUser,
+  isUser,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const { user } = req.body;
@@ -271,8 +303,11 @@ app.put(
   })
 );
 
+// post route to delete a user
 app.delete(
   "/user/:id",
+  authenticateUser,
+  isUser,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
     const delUser = await User.findByIdAndDelete(id);

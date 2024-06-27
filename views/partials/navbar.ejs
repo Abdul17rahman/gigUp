@@ -20,35 +20,59 @@
 					<li class="nav-item">
 						<a class="nav-link" href="/jobs">Jobs</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/proposals">Proposals</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/offers">Offers</a>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-							aria-expanded="false">
-							Login
-						</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="/users/login">User</a></li>
-							<li><a class="dropdown-item" href="/employers/login">Employer</a></li>
-						</ul>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/logout">Logout</a>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-							aria-expanded="false">
-							Register
-						</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="/register">User</a></li>
-							<li><a class="dropdown-item" href="/employers/register">Employer</a></li>
-						</ul>
-					</li>
+
+					<% if (employer || user) {%>
+
+						<li class="nav-item">
+							<a class="nav-link" href="/contracts">Contracts</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="/proposals">Proposals</a>
+						</li>
+
+						<% if (employer){ %>
+							<li class="nav-item">
+								<a class="nav-link" href="/employers/<%= employer._id %>">Profile</a>
+							</li>
+							<% } else { %>
+								<li class="nav-item">
+									<a class="nav-link" href="/user/<%= user._id %>">Profile</a>
+								</li>
+
+								<% } %>
+
+									<li class="nav-item">
+										<form action="/logout" method="post">
+											<button type="submit" class="nav-link">Logout</button>
+										</form>
+									</li>
+									<% } else { %>
+										<li class="nav-item dropdown">
+											<a class="nav-link dropdown-toggle" href="#" role="button"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Login
+											</a>
+											<ul class="dropdown-menu">
+												<li><a class="dropdown-item" href="/users/login">User</a></li>
+												<li><a class="dropdown-item" href="/employers/login">Employer</a></li>
+											</ul>
+										</li>
+
+										<li class="nav-item dropdown">
+											<a class="nav-link dropdown-toggle" href="#" role="button"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Register
+											</a>
+											<ul class="dropdown-menu">
+												<li><a class="dropdown-item" href="/register">User</a></li>
+												<li><a class="dropdown-item" href="/employers/register">Employer</a>
+												</li>
+											</ul>
+										</li>
+
+										<% } %>
+
 				</ul>
 			</div>
 		</div>
