@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
-const Schema = mongoose;
+const { Schema } = mongoose;
 
 const contractSchema = new Schema({
-  job: { type: Schema.Types.ObjectId, ref: "Job" },
-  employer: { type: Schema.Types.ObjectId, ref: "Employer" },
-  user: { type: Schema.Types.ObjectId, ref: "User" },
+  status: {
+    type: String,
+    enum: ["Running", "Completed", "Cancelled"],
+  },
+  comment: {
+    type: String,
+  },
+  proposal: { type: Schema.Types.ObjectId, ref: "Proposal" },
 });
 
 const Contract = mongoose.model("Contract", contractSchema);

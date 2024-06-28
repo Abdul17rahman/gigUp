@@ -1,0 +1,49 @@
+<!-- Job application-->
+
+
+<div class="card">
+	<div class="card-body">
+		<h5 class="card-title">
+			<%= job.title %>
+		</h5>
+		<h6 class="card-subtitle mb-2 text-muted">
+			<%= job.description %>
+		</h6>
+		<form method="post" action="/jobs/<%- job._id %>/apply" class="validatedForm" novalidate>
+
+			<div class="mb-3">
+				<label class="sr-only" for="inlineFormInputGroup">Proposal Price:</label>
+				<div class="input-group mb-2">
+					<div class="input-group-prepend">
+						<div class="input-group-text">$</div>
+					</div>
+					<input type="number" class="form-control" id="inlineFormInputGroup" name="proposal[price]" min="1"
+						required>
+					<div class="valid-feedback">
+						Looks good!
+					</div>
+					<div class="invalid-feedback">
+						Please enter the offer price.!
+					</div>
+				</div>
+			</div>
+
+			<div class="mb-3">
+				<label for="cover" class="form-label">Cover letter:</label>
+				<textarea type="text" class="form-control" name="proposal[cover]" id="cover" rows="3" cols="20"
+					aria-describedby="coverHelp" required></textarea>
+				<div class="valid-feedback">
+					Looks good!
+				</div>
+				<div class="invalid-feedback">
+					Please submit a cover letter.!
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<a href="/jobs" class="btn btn-info">Back</a>
+				<button type="submit" class="btn btn-success ms-2">Submit</button>
+			</div>
+		</form>
+	</div>
+</div>

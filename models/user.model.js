@@ -34,7 +34,7 @@ const userSchema = new Schema({
   proposals: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Proposa",
+      ref: "Proposal",
     },
   ],
 });

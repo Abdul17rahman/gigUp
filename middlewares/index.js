@@ -67,6 +67,7 @@ function validate(name) {
 
 function authenticateUser(req, res, next) {
   if (!req.session.user) {
+    req.session.returnTo = req.originalUrl;
     req.flash("error", "Please kindly login.");
     return res.redirect("/users/login");
   }
@@ -75,6 +76,7 @@ function authenticateUser(req, res, next) {
 
 function authenticateEmp(req, res, next) {
   if (!req.session.employer) {
+    req.session.returnTo = req.originalUrl;
     req.flash("error", "Please kindly login.");
     return res.redirect("/employers/login");
   }

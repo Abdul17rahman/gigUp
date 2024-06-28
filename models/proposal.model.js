@@ -1,11 +1,20 @@
 const mongoose = require("mongoose");
-const Schema = mongoose;
+const { Schema } = mongoose;
 
 const proposalSchema = new Schema({
   status: {
     type: String,
     enums: ["Pending", "Accepted", "Rejected"],
     default: "Pending",
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: [1],
+  },
+  cover: {
+    type: String,
+    required: true,
   },
   job: { type: Schema.Types.ObjectId, ref: "Job" },
   user: { type: Schema.Types.ObjectId, ref: "User" },

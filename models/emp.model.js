@@ -29,6 +29,7 @@ const employerSchema = new Schema({
   },
   jobs: [{ type: Schema.Types.ObjectId, ref: "Job" }],
   reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+  proposals: [{ type: Schema.Types.ObjectId, ref: "Proposal" }],
   contracts: [{ type: Schema.Types.ObjectId, ref: "Contract" }],
 });
 

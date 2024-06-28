@@ -19,6 +19,7 @@ const {
 } = require("./middlewares");
 const Employer = require("./models/emp.model");
 const User = require("./models/user.model");
+const Proposal = require("./models/proposal.model");
 
 const app = express();
 connectDb("gigUp");
@@ -173,8 +174,9 @@ app.post(
 
     if (verified) {
       req.session.employer = employer;
+      const redirectUrl = req.session.returnTo || `/employers/${employer._id}`;
       req.flash("success", `Welcome back ${employer.username}.`);
-      res.redirect(`/employers/${employer._id}`);
+      res.redirect(redirectUrl);
     } else {
       req.flash("error", "Invalid credentials, Please try again.");
       res.redirect("/employers/login");
@@ -197,6 +199,7 @@ app.delete(
     const { id } = req.params;
     const delUser = await Employer.findByIdAndDelete(id);
     req.flash("success", "Account deleted succcessfully.");
+    req.session.destroy();
     res.redirect("/");
   })
 );
@@ -244,11 +247,17 @@ app.get(
   isUser,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
-    const foundUser = await User.findById(id);
+    const foundUser = await User.findById(id).populate("proposals");
     if (!foundUser) {
       req.flash("error", "User account doesn't exit!.");
       return res.redirect("/register");
     }
+    const jobs = await Promise.all(
+      foundUser.proposals.map(async (p) => {
+        return await Job.findById(p.job);
+      })
+    );
+    foundUser.jobs = jobs;
     res.render("users/show", { foundUser });
   })
 );
@@ -264,8 +273,9 @@ app.post("/users/login", async (req, res) => {
   const verified = await bcrypt.compare(user.password, foundUser.password);
   if (verified) {
     req.session.user = foundUser;
+    const redirectUrl = req.session.returnTo || `/user/${foundUser._id}`;
     req.flash("success", `Welcome back ${foundUser.username}`);
-    res.redirect(`/user/${foundUser._id}`);
+    res.redirect(redirectUrl);
   } else {
     req.flash("error", "Invalid credentials, Please try again.");
     res.redirect("/users/login");
@@ -312,9 +322,40 @@ app.delete(
     const { id } = req.params;
     const delUser = await User.findByIdAndDelete(id);
     req.flash("success", "Account deleted succcessfully.");
+    req.session.destroy();
     res.redirect("/jobs");
   })
 );
+
+// proposals user page
+app.get("/jobs/:jobId/apply/", authenticateUser, async (req, res) => {
+  const { jobId } = req.params;
+  const job = await Job.findById(jobId);
+  res.render("users/apply", { job });
+});
+
+// Apply for a job
+app.post("/jobs/:jobId/apply", authenticateUser, async (req, res) => {
+  const { jobId } = req.params;
+  const { proposal } = req.body;
+  const job = await Job.findById(jobId);
+  const user = await User.findById(req.session.user._id);
+  const employer = await Employer.findById(job.employer._id);
+  if (user.proposals.includes(jobId)) {
+    req.flash("error", "You already applied for this job.!");
+    return res.redirect(`/proposals`);
+  }
+  proposal.job = job;
+  proposal.user = user;
+  const newProposal = new Proposal(proposal);
+  employer.proposals.push(newProposal);
+  user.proposals.push(newProposal);
+  await employer.save();
+  await user.save();
+  await newProposal.save();
+
+  res.redirect(`/user/${user._id}`);
+});
 
 // Middleware for non-existing other routes
 app.use((req, res) => {

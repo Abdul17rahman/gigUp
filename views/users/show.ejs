@@ -12,11 +12,13 @@
 	</form>
 
 	<h3>Jobs Applied for:</h3>
-	<% if (foundUser.proposals.length){ %>
+	<% if (foundUser.jobs){ %>
 		<ul>
-			<% for (let job of foundUser.proposals){ %>
-				<%= job.title %>
-					<% } %>
+			<% for (let job of foundUser.jobs){ %>
+				<li>
+					<%= job.title %>
+				</li>
+				<% } %>
 		</ul>
 		<% } else { %>
 			<p>You haven't applied for any job yet.!</p>
