@@ -1,108 +1,100 @@
 <div class="view-single-job">
-	<h4>Job Title: <%= foundJob.title %>
-	</h4>
-	<p>Description: <%= foundJob.description %>
-	</p>
-	<p>Employer: <% if (foundJob.employer) {%>
-			<%= foundJob.employer.company %>
-				<% } %>
-	</p>
-	<p>Location: <%= foundJob.location %>
-	</p>
-	<p>Duration: <%= foundJob.duration %>
-	</p>
-	<p>Positions Available: <%= foundJob.numOfPos %>
-	</p>
-	<p>Status: <%= foundJob.status %>
-	</p>
-	<p>Posted on: <%= foundJob.created_date %>
-	</p>
-	<a href="/jobs" class="btn btn-info">Back</a>
-	<% if (employer && employer._id.toString()===foundJob.employer._id.toString()) { %>
-		<a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
-		<form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=DELETE">
-			<button type="submit" class="btn btn-danger">Delete</button>
-		</form>
-		<% } else { %>
-			<a href="/jobs/<%- foundJob._id %>/apply" class="btn btn-success">Apply</a>
-			<% } %>
+  <h4>Job Title: <%= foundJob.title %>
+  </h4>
+  <p>Description: <%= foundJob.description %>
+  </p>
+  <p>Employer: <% if (foundJob.employer) {%>
+    <%= foundJob.employer.company %>
+    <% } %>
+  </p>
+  <p>Location: <%= foundJob.location %>
+  </p>
+  <p>Duration: <%= foundJob.duration %>
+  </p>
+  <p>Positions Available: <%= foundJob.numOfPos %>
+  </p>
+  <p>Status: <%= foundJob.status %>
+  </p>
+  <p>Posted on: <%= foundJob.created_date %>
+  </p>
+  <a href="/jobs" class="btn btn-info">Back</a>
+  <% if (employer && employer._id.toString()===foundJob.employer._id.toString()) { %>
+  <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
+  <form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=DELETE">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+  <% } else { %>
+  <a href="/jobs/<%- foundJob._id %>/apply" class="btn btn-success">Apply</a>
+  <% } %>
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade modal-lg" id="edit-job" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-	aria-labelledby="edit-jobLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="edit-jobLabel">Edit Job details</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<form method="post"
-					action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=PUT"
-					class="validatedForm" novalidate>
-					<div class="mb-3">
-						<label for="title" class="form-label">Title</label>
-						<input type="text" class="form-control" name="job[title]" id="title"
-							value="<%= foundJob.title %>" aria-describedby="titleHelp" required>
-						<div class="valid-feedback">
-							Looks good!
-						</div>
-						<div class="invalid-feedback">
-							Please enter job title.!
-						</div>
-					</div>
-					<div class="mb-3">
-						<label for="description" class="form-label">Description</label>
-						<textarea type="text" class="form-control" name="job[description]" id="description" rows="3"
-							cols="20" aria-describedby="desHelp" required><%= foundJob.description %></textarea>
-						<div class="valid-feedback">
-							Looks good!
-						</div>
-						<div class="invalid-feedback">
-							Please enter some description of the job.!
-						</div>
-					</div>
-					<div class="mb-3">
-						<label for="location" class="form-label">Location:</label>
-						<input type="location" class="form-control" name="job[location]" id="location"
-							value="<%= foundJob.location %>" aria-describedby="locationHelp" required>
-						<div class="valid-feedback">
-							Looks good!
-						</div>
-						<div class="invalid-feedback">
-							Please provide the job location.!
-						</div>
-					</div>
+<div class="modal fade modal-lg" id="edit-job" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit-jobLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="edit-jobLabel">Edit Job details</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=PUT" class="validatedForm" novalidate>
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" name="job[title]" id="title" value="<%= foundJob.title %>" aria-describedby="titleHelp" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+            <div class="invalid-feedback">
+              Please enter job title.!
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea type="text" class="form-control" name="job[description]" id="description" rows="3" cols="20" aria-describedby="desHelp" required><%= foundJob.description %></textarea>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+            <div class="invalid-feedback">
+              Please enter some description of the job.!
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="location" class="form-label">Location:</label>
+            <input type="location" class="form-control" name="job[location]" id="location" value="<%= foundJob.location %>" aria-describedby="locationHelp" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+            <div class="invalid-feedback">
+              Please provide the job location.!
+            </div>
+          </div>
 
-					<div class="mb-3">
-						<label for="numOfPos" class="form-label">Positions</label>
-						<input type="number" class="form-control" name="job[numOfPos]" id="numOfPos" min="1"
-							value="<%= foundJob.numOfPos %>" aria-describedby="numOfPosHelp" required>
-						<div class="valid-feedback">
-							Looks good!
-						</div>
-						<div class="invalid-feedback">
-							Please fill in the available positions.!
-						</div>
-					</div>
-					<div class="mb-3">
-						<label for="duration" class="form-label">Duration</label>
-						<input type="text" class="form-control" name="job[duration]" id="duration"
-							value="<%= foundJob.duration %>" aria-describedby="durationHelp" required>
-						<div class="valid-feedback">
-							Looks good!
-						</div>
-						<div class="invalid-feedback">
-							Please enter the job duration.!
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-						<button type="submit" class="btn btn-primary">Save</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+          <div class="mb-3">
+            <label for="numOfPos" class="form-label">Positions</label>
+            <input type="number" class="form-control" name="job[numOfPos]" id="numOfPos" min="1" value="<%= foundJob.numOfPos %>" aria-describedby="numOfPosHelp" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+            <div class="invalid-feedback">
+              Please fill in the available positions.!
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="duration" class="form-label">Duration</label>
+            <input type="text" class="form-control" name="job[duration]" id="duration" value="<%= foundJob.duration %>" aria-describedby="durationHelp" required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+            <div class="invalid-feedback">
+              Please enter the job duration.!
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

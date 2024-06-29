@@ -20,6 +20,7 @@ const {
 const Employer = require("./models/emp.model");
 const User = require("./models/user.model");
 const Proposal = require("./models/proposal.model");
+const Contract = require("./models/contract.model");
 
 const app = express();
 connectDb("gigUp");
@@ -232,17 +233,56 @@ app.post(
 );
 
 // employers - proposals
-app.get("/employers/:id/proposals", authenticateEmp, async (req, res) => {
-  const { id } = req.params;
-  const proposals = await Proposal.find()
-    .populate({
-      path: "job",
-      match: { employer: id },
-    })
-    .populate("user");
-  const empProposals = proposals.filter((p) => p.job !== null);
-  res.render("employers/proposals", { empProposals });
-});
+app.get(
+  "/employers/:id/proposals",
+  authenticateEmp,
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const proposals = await Proposal.find()
+      .populate({
+        path: "job",
+        match: { employer: id },
+      })
+      .populate("user");
+    const empProposals = proposals.filter((p) => p.job !== null);
+    res.render("employers/proposals", { empProposals });
+  })
+);
+
+// employers -- reject the proposal
+app.put(
+  "/employers/:id/proposal/:pId/reject",
+  authenticateEmp,
+  async (req, res) => {
+    const { id, pId } = req.params;
+    const proposal = await Proposal.findByIdAndUpdate(pId, {
+      status: "Rejected",
+    });
+    req.flash("success", "Proposal details sent to applicant.");
+    res.redirect(`/employers/${id}`);
+  }
+);
+
+// employers -- accept the proposal
+app.post(
+  "/employers/:id/proposal/:pId/accept",
+  authenticateEmp,
+  async (req, res) => {
+    const { id, pId } = req.params;
+
+    const proposal = await Proposal.findByIdAndUpdate(pId, {
+      status: "Accepted",
+    });
+
+    const contract = new Contract({ status: "Running" });
+    contract.proposal = proposal;
+
+    await contract.save();
+
+    req.flash("success", "Proposal accepted, applicant has been notified.");
+    res.redirect(`/employers/${id}`);
+  }
+);
 
 // Users routes
 app.get("/register", (req, res) => {
@@ -341,48 +381,66 @@ app.delete(
 );
 
 // proposals user page
-app.get("/jobs/:jobId/apply/", authenticateUser, async (req, res) => {
-  const { jobId } = req.params;
-  const job = await Job.findById(jobId);
-  res.render("users/apply", { job });
-});
+app.get(
+  "/jobs/:jobId/apply/",
+  authenticateUser,
+  decorateAsync(async (req, res) => {
+    const { jobId } = req.params;
+    const job = await Job.findById(jobId);
+    res.render("users/apply", { job });
+  })
+);
 
 // Apply for a job
-app.post("/jobs/:jobId/apply", authenticateUser, async (req, res) => {
-  const { jobId } = req.params;
-  const { proposal } = req.body;
-  const job = await Job.findById(jobId);
-  const user = await User.findById(req.session.user._id);
-  const employer = await Employer.findById(job.employer._id);
-  const hasApplied = await Proposal.exists({ job: jobId, user: user._id });
-  if (hasApplied) {
-    req.flash("error", "You already applied for this job.!");
-    return res.redirect(`/user/${user._id}`);
-  }
-  proposal.job = job;
-  proposal.user = user;
-  const newProposal = new Proposal(proposal);
-  employer.proposals.push(newProposal);
-  user.proposals.push(newProposal);
-  await employer.save();
-  await user.save();
-  await newProposal.save();
+app.post(
+  "/jobs/:jobId/apply",
+  authenticateUser,
+  decorateAsync(async (req, res) => {
+    const { jobId } = req.params;
+    const { proposal } = req.body;
+    const job = await Job.findById(jobId);
+    const user = await User.findById(req.session.user._id);
+    const employer = await Employer.findById(job.employer._id);
+    const hasApplied = await Proposal.exists({ job: jobId, user: user._id });
+    if (hasApplied) {
+      req.flash("error", "You already applied for this job.!");
+      return res.redirect(`/user/${user._id}`);
+    }
+    proposal.job = job;
+    proposal.user = user;
+    const newProposal = new Proposal(proposal);
+    employer.proposals.push(newProposal);
+    user.proposals.push(newProposal);
+    await employer.save();
+    await user.save();
+    await newProposal.save();
 
-  res.redirect(`/user/${user._id}`);
-});
+    req.flash("success", "Thank you for applying, check status in proposals.");
+    res.redirect(`/user/${user._id}`);
+  })
+);
 
 // User Proposals
-app.get("/user/:id/proposals", authenticateUser, async (req, res) => {
-  const { id } = req.params;
-  const proposals = await Proposal.find({ user: id }).populate("job");
-  res.render("users/proposals", { proposals });
-});
+app.get(
+  "/user/:id/proposals",
+  authenticateUser,
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const proposals = await Proposal.find({ user: id }).populate("job");
+    res.render("users/proposals", { proposals });
+  })
+);
 
-app.delete("/user/:id/proposals/:pId", authenticateUser, async (req, res) => {
-  const { id, pId } = req.params;
-  const del = await Proposal.findByIdAndDelete(pId);
-  res.redirect(`/user/${id}/proposals`);
-});
+app.delete(
+  "/user/:id/proposals/:pId",
+  authenticateUser,
+  decorateAsync(async (req, res) => {
+    const { id, pId } = req.params;
+    const del = await Proposal.findByIdAndDelete(pId);
+    req.flash("success", "Proposal cancelled successfully.");
+    res.redirect(`/user/${id}/proposals`);
+  })
+);
 
 // Middleware for non-existing other routes
 app.use((req, res) => {

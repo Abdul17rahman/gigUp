@@ -3,13 +3,22 @@
 <% for (let proposal of proposals){ %>
 <div class="card mb-3">
   <div class="card-body">
-    <h5 class="card-title"><%- proposal.job.title %></h5>
-    <h6 class="card-subtitle mb-2 text-muted">Price: $<%- proposal.price %></h6>
+    <% if (proposal.status === "Rejected"){ %>
+    <h5 class="text-danger"> This proposal was rejected.!</h5>
+    <% }else if (proposal.status === "Accepted"){ %>
+    <h5 class="text-success"> This proposal was accepted.!</h5>
+    <% } else{ %>
+    <h5 class="text-warning"> This proposal is under employer's review.!</h5>
+    <% } %>
+    <h5 class="card-title">Job Title: <%- proposal.job.title %></h5>
+    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %></h6>
     <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %></h6>
     <p class="card-text">Cover letter: <%- proposal.cover %></p>
+    <% if (proposal.status !== "Accepted"){ %>
     <form action="/user/<%- proposal.user %>/proposals/<%- proposal._id %>?_method=DELETE" method="post">
       <button type="submit" class="btn btn-danger">Cancel Proposal</button>
     </form>
+    <% } %>
   </div>
 </div>
 <% } %>

@@ -9,9 +9,20 @@
     <p class="card-text">Cover letter: <%- proposal.cover %></p>
     <h5 class="card-title">Applicant: <%- proposal.user.username %></h5>
     <p class="card-text">Applicant Bio: <%- proposal.user.bio %></p>
-    <a href="#" class="btn btn-primary">Counter Offer</a>
-    <a href="#" class="btn btn-danger">Reject</a>
-    <a href="#" class="btn btn-success">Accept</a>
+    <% if (proposal.status === "Rejected") {%>
+    <h5 class="text-danger"> You rejected this proposal.!</h5>
+    <% } else if (proposal.status === "Accepted") { %>
+    <h5 class="text-success"> You accepted this proposal.!</h5>
+    <% } else { %>
+    <!-- <a href="#" class="btn btn-primary m-1">Counter Offer</a> -->
+    <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/reject?_method=PUT" method="post">
+      <button type="submit" class="btn btn-danger m-1">Reject</button>
+    </form>
+    <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/accept" method="post">
+      <button type="submit" class="btn btn-success">Accept</button>
+    </form>
+    <% } %>
+
   </div>
 </div>
 <% } %>
