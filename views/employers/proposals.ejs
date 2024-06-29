@@ -1,0 +1,24 @@
+<% if (empProposals) { %>
+
+<% for (let proposal of empProposals){ %>
+<div class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title">Job: <%- proposal.job.title %></h5>
+    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %></h6>
+    <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %></h6>
+    <p class="card-text">Cover letter: <%- proposal.cover %></p>
+    <h5 class="card-title">Applicant: <%- proposal.user.username %></h5>
+    <p class="card-text">Applicant Bio: <%- proposal.user.bio %></p>
+    <a href="#" class="btn btn-primary">Counter Offer</a>
+    <a href="#" class="btn btn-danger">Reject</a>
+    <a href="#" class="btn btn-success">Accept</a>
+  </div>
+</div>
+<% } %>
+
+<% } else { %>
+<div>
+  <h3>You currently have no job proposals.</h3>
+  <p>Click here to apply <a href="/jobs">here</a></p>
+</div>
+<% } %>

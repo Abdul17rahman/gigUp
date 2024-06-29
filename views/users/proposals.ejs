@@ -1,0 +1,22 @@
+<% if (proposals) { %>
+
+<% for (let proposal of proposals){ %>
+<div class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title"><%- proposal.job.title %></h5>
+    <h6 class="card-subtitle mb-2 text-muted">Price: $<%- proposal.price %></h6>
+    <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %></h6>
+    <p class="card-text">Cover letter: <%- proposal.cover %></p>
+    <form action="/user/<%- proposal.user %>/proposals/<%- proposal._id %>?_method=DELETE" method="post">
+      <button type="submit" class="btn btn-danger">Cancel Proposal</button>
+    </form>
+  </div>
+</div>
+<% } %>
+
+<% } else { %>
+<div>
+  <h3>You currently have no job proposals.</h3>
+  <p>Click here to apply <a href="/jobs">here</a></p>
+</div>
+<% } %>

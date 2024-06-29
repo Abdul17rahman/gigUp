@@ -231,6 +231,19 @@ app.post(
   })
 );
 
+// employers - proposals
+app.get("/employers/:id/proposals", authenticateEmp, async (req, res) => {
+  const { id } = req.params;
+  const proposals = await Proposal.find()
+    .populate({
+      path: "job",
+      match: { employer: id },
+    })
+    .populate("user");
+  const empProposals = proposals.filter((p) => p.job !== null);
+  res.render("employers/proposals", { empProposals });
+});
+
 // Users routes
 app.get("/register", (req, res) => {
   res.render("users/register");
@@ -341,9 +354,10 @@ app.post("/jobs/:jobId/apply", authenticateUser, async (req, res) => {
   const job = await Job.findById(jobId);
   const user = await User.findById(req.session.user._id);
   const employer = await Employer.findById(job.employer._id);
-  if (user.proposals.includes(jobId)) {
+  const hasApplied = await Proposal.exists({ job: jobId, user: user._id });
+  if (hasApplied) {
     req.flash("error", "You already applied for this job.!");
-    return res.redirect(`/proposals`);
+    return res.redirect(`/user/${user._id}`);
   }
   proposal.job = job;
   proposal.user = user;
@@ -355,6 +369,19 @@ app.post("/jobs/:jobId/apply", authenticateUser, async (req, res) => {
   await newProposal.save();
 
   res.redirect(`/user/${user._id}`);
+});
+
+// User Proposals
+app.get("/user/:id/proposals", authenticateUser, async (req, res) => {
+  const { id } = req.params;
+  const proposals = await Proposal.find({ user: id }).populate("job");
+  res.render("users/proposals", { proposals });
+});
+
+app.delete("/user/:id/proposals/:pId", authenticateUser, async (req, res) => {
+  const { id, pId } = req.params;
+  const del = await Proposal.findByIdAndDelete(pId);
+  res.redirect(`/user/${id}/proposals`);
 });
 
 // Middleware for non-existing other routes

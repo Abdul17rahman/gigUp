@@ -1,80 +1,85 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3" aria-label="Offcanvas navbar large">
-	<div class="container-fluid">
-		<a class="navbar-brand" href="/">gigUp</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2"
-			aria-controls="offcanvasNavbar2" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar2"
-			aria-labelledby="offcanvasNavbar2Label">
-			<div class="offcanvas-header">
-				<h5 class="offcanvas-title" id="offcanvasNavbar2Label">gigUp</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
-					aria-label="Close"></button>
-			</div>
-			<div class="offcanvas-body">
-				<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-					<li class="nav-item">
-						<a class="nav-link active" aria-current="page" href="/">Home</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/jobs">Jobs</a>
-					</li>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">gigUp</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2" aria-controls="offcanvasNavbar2" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar2" aria-labelledby="offcanvasNavbar2Label">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbar2Label">gigUp</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/jobs">Jobs</a>
+          </li>
 
-					<% if (employer || user) {%>
+          <% if (employer || user) {%>
 
-						<li class="nav-item">
-							<a class="nav-link" href="/contracts">Contracts</a>
-						</li>
+          <% if (employer){ %>
 
-						<li class="nav-item">
-							<a class="nav-link" href="/proposals">Proposals</a>
-						</li>
+          <li class="nav-item">
+            <a class="nav-link" href="/employers/<%= employer._id %>/contracts">Contracts</a>
+          </li>
 
-						<% if (employer){ %>
-							<li class="nav-item">
-								<a class="nav-link" href="/employers/<%= employer._id %>">Profile</a>
-							</li>
-							<% } else { %>
-								<li class="nav-item">
-									<a class="nav-link" href="/user/<%= user._id %>">Profile</a>
-								</li>
+          <li class="nav-item">
+            <a class="nav-link" href="/employers/<%= employer._id %>/proposals">Proposals</a>
+          </li>
 
-								<% } %>
+          <li class="nav-item">
+            <a class="nav-link" href="/employers/<%= employer._id %>">Profile</a>
+          </li>
+          <% } else { %>
 
-									<li class="nav-item">
-										<form action="/logout" method="post">
-											<button type="submit" class="nav-link">Logout</button>
-										</form>
-									</li>
-									<% } else { %>
-										<li class="nav-item dropdown">
-											<a class="nav-link dropdown-toggle" href="#" role="button"
-												data-bs-toggle="dropdown" aria-expanded="false">
-												Login
-											</a>
-											<ul class="dropdown-menu">
-												<li><a class="dropdown-item" href="/users/login">User</a></li>
-												<li><a class="dropdown-item" href="/employers/login">Employer</a></li>
-											</ul>
-										</li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/<%- user._id %>/contracts">Contracts</a>
+          </li>
 
-										<li class="nav-item dropdown">
-											<a class="nav-link dropdown-toggle" href="#" role="button"
-												data-bs-toggle="dropdown" aria-expanded="false">
-												Register
-											</a>
-											<ul class="dropdown-menu">
-												<li><a class="dropdown-item" href="/register">User</a></li>
-												<li><a class="dropdown-item" href="/employers/register">Employer</a>
-												</li>
-											</ul>
-										</li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/<%- user._id %>/proposals">Proposals</a>
+          </li>
 
-										<% } %>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/<%= user._id %>">Profile</a>
+          </li>
 
-				</ul>
-			</div>
-		</div>
-	</div>
+          <% } %>
+
+          <li class="nav-item">
+            <form action="/logout" method="post">
+              <button type="submit" class="nav-link">Logout</button>
+            </form>
+          </li>
+          <% } else { %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Login
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/users/login">User</a></li>
+              <li><a class="dropdown-item" href="/employers/login">Employer</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Register
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/register">User</a></li>
+              <li><a class="dropdown-item" href="/employers/register">Employer</a>
+              </li>
+            </ul>
+          </li>
+
+          <% } %>
+
+        </ul>
+      </div>
+    </div>
+  </div>
 </nav>
