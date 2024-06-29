@@ -253,21 +253,21 @@ app.get(
 app.put(
   "/employers/:id/proposal/:pId/reject",
   authenticateEmp,
-  async (req, res) => {
+  decorateAsync(async (req, res) => {
     const { id, pId } = req.params;
     const proposal = await Proposal.findByIdAndUpdate(pId, {
       status: "Rejected",
     });
     req.flash("success", "Proposal details sent to applicant.");
     res.redirect(`/employers/${id}`);
-  }
+  })
 );
 
 // employers -- accept the proposal
 app.post(
   "/employers/:id/proposal/:pId/accept",
   authenticateEmp,
-  async (req, res) => {
+  decorateAsync(async (req, res) => {
     const { id, pId } = req.params;
 
     const proposal = await Proposal.findByIdAndUpdate(pId, {
@@ -281,7 +281,7 @@ app.post(
 
     req.flash("success", "Proposal accepted, applicant has been notified.");
     res.redirect(`/employers/${id}`);
-  }
+  })
 );
 
 // Users routes
@@ -439,6 +439,23 @@ app.delete(
     const del = await Proposal.findByIdAndDelete(pId);
     req.flash("success", "Proposal cancelled successfully.");
     res.redirect(`/user/${id}/proposals`);
+  })
+);
+
+// contracts for users.
+app.get(
+  "/user/:id/contracts",
+  authenticateUser,
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const contracts = await Contract.find().populate({
+      path: "proposal",
+      match: { user: id },
+      populate: {
+        path: "job",
+      },
+    });
+    res.render("users/contracts", { contracts });
   })
 );
 

@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const contractSchema = new Schema({
   status: {
     type: String,
-    enum: ["Running", "Completed", "Cancelled"],
+    enum: ["Running", "Completed"],
   },
   comment: {
     type: String,

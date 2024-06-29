@@ -1,0 +1,20 @@
+<% if (contracts){ %>
+
+<% for (let contract of contracts){ %>
+<div class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title">Job Title: <%= contract.proposal.job.title %></h5>
+    <h6 class="card-subtitle mb-2 text-muted">Agreed price: <%= contract.proposal.price %></h6>
+    <h6 class="card-subtitle mb-2 text-muted">Status: <%= contract.status %></h6>
+    <h6 class="card-subtitle mb-2 text-muted">Duration: <%= contract.proposal.job.duration %></h6>
+    <p class="card-text">Job Details: <%= contract.proposal.job.description %></p>
+    <div class="card-footer text-success">
+      This job is currently running.
+    </div>
+  </div>
+</div>
+<% } %>
+
+<% }else{ %>
+<h3>You currently have no contracts.</h3>
+<% } %>
