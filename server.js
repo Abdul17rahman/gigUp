@@ -129,6 +129,7 @@ app.get("/employers/register", (req, res) => {
 });
 
 app.get("/employers/login", (req, res) => {
+  req.session.destroy();
   res.render("employers/login");
 });
 
@@ -284,12 +285,50 @@ app.post(
   })
 );
 
+//Employer - contracts.....
+app.get(
+  "/employers/:id/contracts",
+  authenticateEmp,
+  decorateAsync(async (req, res) => {
+    const { id } = req.params;
+    const foundContracts = await Contract.find().populate({
+      path: "proposal",
+      populate: {
+        path: "job",
+      },
+    });
+    const contracts = foundContracts.filter(
+      (c) =>
+        c.proposal && c.proposal.job && String(c.proposal.job.employer) === id
+    );
+    res.render("employers/contracts", { contracts });
+  })
+);
+
+// employer completes contract
+app.put(
+  "/employers/:id/contracts/:cId/complete",
+  authenticateEmp,
+  decorateAsync(async (req, res) => {
+    const { id, cId } = req.params;
+    const contract = await Contract.findByIdAndUpdate(cId, {
+      status: "Completed",
+    });
+    req.flash(
+      "success",
+      "The contract was successfully completed, Thank you.!"
+    );
+    res.redirect(`/employers/${id}`);
+  })
+);
+
 // Users routes
 app.get("/register", (req, res) => {
   res.render("users/register");
 });
 
 app.get("/users/login", (req, res) => {
+  req.session.destroy();
   res.render("users/login");
 });
 
@@ -448,13 +487,16 @@ app.get(
   authenticateUser,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
-    const contracts = await Contract.find().populate({
+    const foundContracts = await Contract.find().populate({
       path: "proposal",
       match: { user: id },
       populate: {
         path: "job",
       },
     });
+    const contracts = foundContracts.filter(
+      (c) => c.proposal && c.proposal.job
+    );
     res.render("users/contracts", { contracts });
   })
 );

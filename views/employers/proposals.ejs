@@ -1,5 +1,5 @@
-<% if (empProposals) { %>
-
+<% if (empProposals.length) { %>
+<h2>Proposals</h2>
 <% for (let proposal of empProposals){ %>
 <div class="card mb-3">
   <div class="card-body">
@@ -10,9 +10,9 @@
     <h5 class="card-title">Applicant: <%- proposal.user.username %></h5>
     <p class="card-text">Applicant Bio: <%- proposal.user.bio %></p>
     <% if (proposal.status === "Rejected") {%>
-    <h5 class="text-danger"> You rejected this proposal.!</h5>
+    <h5 class="bg-danger p-2"> You rejected this proposal.!</h5>
     <% } else if (proposal.status === "Accepted") { %>
-    <h5 class="text-success"> You accepted this proposal.!</h5>
+    <h5 class="bg-success p-2"> You accepted this proposal.!</h5>
     <% } else { %>
     <!-- <a href="#" class="btn btn-primary m-1">Counter Offer</a> -->
     <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/reject?_method=PUT" method="post">

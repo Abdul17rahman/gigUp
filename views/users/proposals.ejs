@@ -1,12 +1,12 @@
-<% if (proposals) { %>
-
+<% if (proposals.length) { %>
+<h2>Proposals</h2>
 <% for (let proposal of proposals){ %>
 <div class="card mb-3">
   <div class="card-body">
     <% if (proposal.status === "Rejected"){ %>
-    <h5 class="text-danger"> This proposal was rejected.!</h5>
+    <h5 class="bg-danger p-2"> This proposal was rejected.!</h5>
     <% }else if (proposal.status === "Accepted"){ %>
-    <h5 class="text-success">Congrats, this proposal was accepted.!</h5>
+    <h5 class="bg-success p-2">Congrats, this proposal was accepted.!</h5>
     <% } else{ %>
     <h5 class="text-warning"> This proposal is under employer's review.!</h5>
     <% } %>
