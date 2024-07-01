@@ -7,7 +7,7 @@
   <p>Email: <%= foundUser.email %>
   </p>
   <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-user">Edit Bio</a>
-  <form action="/foundUsers/<%= foundUser._id %>?_method=DELETE" method="post">
+  <form action="/user/<%= foundUser._id %>?_method=DELETE" method="post">
     <button type="submit" class="btn btn-danger my-2">Delete Account</button>
   </form>
 

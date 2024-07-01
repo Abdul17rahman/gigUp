@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const path = require("path");
 const methodOverride = require("method-override");
@@ -9,6 +11,7 @@ const flash = require("connect-flash");
 const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
 const { decorateAsync, encryptPassword } = require("./utils/utils");
+const sendEmail = require("./utils/email");
 const Job = require("./models/jobs.model");
 const {
   validate,
@@ -29,7 +32,7 @@ const PORT = process.env.PORT || 3000;
 // Use session
 app.use(
   session({
-    secret: "mysecret",
+    secret: `${process.env.MY_SECRET}`,
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60000 },
@@ -357,9 +360,12 @@ app.get(
 // post req to login as user
 app.post("/users/login", async (req, res) => {
   const { user } = req.body;
-  const foundUser = await User.findOne({ email: user.email });
+  const foundUser = await User.findOne({ email: user.email, isVerified: true });
   if (!foundUser) {
-    req.flash("error", "Invalid credentials, Please try again.");
+    req.flash(
+      "error",
+      "Invalid credentials or account not verified. Please try again."
+    );
     return res.redirect("/users/login");
   }
   const verified = await bcrypt.compare(user.password, foundUser.password);
@@ -381,12 +387,34 @@ app.post(
   decorateAsync(async (req, res) => {
     const { user } = req.body;
     const encUser = await encryptPassword(user);
+    encUser.verification_token = new Date().getTime();
     const newUser = new User(encUser);
+    await sendEmail("Verification", "Verify Account", encUser);
     await newUser.save();
-    req.flash("success", "Account created succcessfully.");
+    req.flash(
+      "success",
+      "Account created succcessfully, Please check your email and verify the account to login."
+    );
     res.redirect(`/users/login`);
   })
 );
+
+app.get("/verifyEmail/:emailId/:token", async (req, res) => {
+  const { emailId, token } = req.params;
+  const user = await User.findOne({
+    email: emailId,
+    verification_token: parseInt(token),
+  });
+
+  if (!user) {
+    req.flash("error", "User doesn't exist or verification token is expired");
+    return res.redirect("/register");
+  }
+  user.isVerified = true;
+  await user.save();
+  req.flash("success", "Account verified successfully, you can now login.");
+  res.redirect("/users/login");
+});
 
 // put route to edit user profile
 app.put(
