@@ -12,6 +12,11 @@ const proposalSchema = new Schema({
     required: true,
     min: [1],
   },
+  period: {
+    type: String,
+    enum: ["fixed", "hr", "day", "wk", "mo"],
+    default: "fixed",
+  },
   cover: {
     type: String,
     required: true,

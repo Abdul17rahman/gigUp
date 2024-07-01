@@ -11,7 +11,7 @@
     <h5 class="text-warning"> This proposal is under employer's review.!</h5>
     <% } %>
     <h5 class="card-title">Job Title: <%- proposal.job.title %></h5>
-    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %></h6>
+    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %>-<%- proposal.period %>.</h6>
     <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %></h6>
     <p class="card-text">Cover letter: <%- proposal.cover %></p>
     <% if (proposal.status !== "Accepted"){ %>

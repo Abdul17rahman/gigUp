@@ -28,6 +28,17 @@
       </div>
 
       <div class="mb-3">
+        <label for="period" class="form-label">Payment Period:</label>
+        <select class="form-select" name="proposal[period]">
+          <option selected value="fixed">Fixed</option>
+          <option value="hr">Hour</option>
+          <option value="day">Day</option>
+          <option value="wk">Week</option>
+          <option value="mo">Month</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
         <label for="cover" class="form-label">Cover letter:</label>
         <textarea type="text" class="form-control" name="proposal[cover]" id="cover" rows="3" cols="20" aria-describedby="coverHelp" required></textarea>
         <div class="valid-feedback">

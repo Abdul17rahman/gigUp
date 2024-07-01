@@ -3,9 +3,9 @@
 <% for (let proposal of empProposals){ %>
 <div class="card mb-3">
   <div class="card-body">
-    <h5 class="card-title">Job: <%- proposal.job.title %></h5>
-    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %></h6>
-    <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %></h6>
+    <h5 class="card-title">Job: <%- proposal.job.title %>.</h5>
+    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %>-<%- proposal.period %>.</h6>
+    <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %>.</h6>
     <p class="card-text">Cover letter: <%- proposal.cover %></p>
     <h5 class="card-title">Applicant: <%- proposal.user.username %></h5>
     <p class="card-text">Applicant Bio: <%- proposal.user.bio %></p>
@@ -15,12 +15,15 @@
     <h5 class="bg-success p-2"> You accepted this proposal.!</h5>
     <% } else { %>
     <!-- <a href="#" class="btn btn-primary m-1">Counter Offer</a> -->
-    <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/reject?_method=PUT" method="post">
-      <button type="submit" class="btn btn-danger m-1">Reject</button>
-    </form>
-    <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/accept" method="post">
-      <button type="submit" class="btn btn-success">Accept</button>
-    </form>
+    <div class="d-flex gap-1">
+      <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/reject?_method=PUT" method="post">
+        <button type="submit" class="btn btn-danger">Reject</button>
+      </form>
+      <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/accept" method="post">
+        <button type="submit" class="btn btn-success">Accept</button>
+      </form>
+    </div>
+
     <% } %>
 
   </div>

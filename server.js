@@ -278,8 +278,14 @@ app.post(
       status: "Accepted",
     });
 
+    const job = await Job.findById(proposal.job);
+
     const contract = new Contract({ status: "Running" });
     contract.proposal = proposal;
+
+    job.contract = contract;
+
+    await job.save();
 
     await contract.save();
 
@@ -478,6 +484,8 @@ app.post(
     const newProposal = new Proposal(proposal);
     employer.proposals.push(newProposal);
     user.proposals.push(newProposal);
+    job.proposals.push(newProposal);
+    await job.save();
     await employer.save();
     await user.save();
     await newProposal.save();
