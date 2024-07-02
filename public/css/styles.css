@@ -1,3 +1,65 @@
-body {
-  /* background-color: aqua; */
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../images/proffesional_users.jpg") no-repeat center center;
+  background-size: cover;
+  color: white;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.feature-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.testimonial {
+  background: #f8f9fa;
+  padding: 3rem 1rem;
+}
+
+.partners img {
+  max-height: 50px;
+  margin: 10px;
+  border-radius: 50%;
+}
+
+.social-icons a {
+  font-size: 24px;
+  margin: 0 10px;
+  /* color: #343a40; */
+}
+
+.social-icons a:hover {
+  color: #007bff;
+}
+
+.info-section {
+  background: #f8f9fa;
+  padding: 3rem 1rem;
+  margin-top: 3rem;
+}
+
+.info-section .col-md-4 {
+  margin-bottom: 2rem;
+}
+
+.info-section h4 {
+  margin-bottom: 1rem;
+  color: #343a40;
+}
+
+.info-section p {
+  color: #6c757d;
+}
+
+.info-section .partners img {
+  transition: transform 0.3s ease;
+}
+
+.info-section .partners img:hover {
+  transform: scale(1.1);
 }

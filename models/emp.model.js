@@ -15,6 +15,13 @@ const employerSchema = new Schema({
     type: String,
     required: true,
   },
+  verification_token: {
+    type: Number,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
   email: {
     type: String,
     required: true,

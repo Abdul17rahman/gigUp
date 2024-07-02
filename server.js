@@ -11,7 +11,7 @@ const flash = require("connect-flash");
 const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
 const { decorateAsync, encryptPassword } = require("./utils/utils");
-const sendEmail = require("./utils/email");
+const { sendEmail, sendProposal, proposalRes } = require("./utils/email");
 const Job = require("./models/jobs.model");
 const {
   validate,
@@ -35,7 +35,11 @@ app.use(
     secret: `${process.env.MY_SECRET}`,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 },
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production", // Ensures the cookie is only used over HTTPS
+      httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not client JavaScript, helping to protect against XSS
+    },
   })
 );
 
@@ -158,9 +162,14 @@ app.post(
   decorateAsync(async (req, res) => {
     const { emp } = req.body;
     const employer = await encryptPassword(emp);
+    employer.verification_token = new Date().getTime();
     const newEmp = new Employer(employer);
+    await sendEmail("Verification", "employer", "Verify Account", newEmp);
     await newEmp.save();
-    req.flash("success", "Employer account succesfully created.!");
+    req.flash(
+      "success",
+      "Employer account created, Please visit your email for verification.!"
+    );
     res.redirect("/employers/login");
   })
 );
@@ -170,9 +179,15 @@ app.post(
   "/employers/login",
   decorateAsync(async (req, res) => {
     const { emp } = req.body;
-    const employer = await Employer.findOne({ email: emp.email });
+    const employer = await Employer.findOne({
+      email: emp.email,
+      isVerified: true,
+    });
     if (!employer) {
-      req.flash("error", "Invalid credentials, Please try again.");
+      req.flash(
+        "error",
+        "Invalid credentials or account not verified, Please try again."
+      );
       return res.redirect("/employers/login");
     }
     const verified = await bcrypt.compare(emp.password, employer.password);
@@ -186,6 +201,26 @@ app.post(
       req.flash("error", "Invalid credentials, Please try again.");
       res.redirect("/employers/login");
     }
+  })
+);
+
+app.get(
+  "/verifyEmail/:emailId/:token/employer",
+  decorateAsync(async (req, res) => {
+    const { emailId, token } = req.params;
+    const employer = await Employer.findOne({
+      email: emailId,
+      verification_token: parseInt(token),
+    });
+
+    if (!employer) {
+      req.flash("error", "User doesn't exist or verification token is expired");
+      return res.redirect("/register");
+    }
+    employer.isVerified = true;
+    await employer.save();
+    req.flash("success", "Account verified successfully, you can now login.");
+    res.redirect("/employers/login");
   })
 );
 
@@ -261,7 +296,14 @@ app.put(
     const { id, pId } = req.params;
     const proposal = await Proposal.findByIdAndUpdate(pId, {
       status: "Rejected",
-    });
+    })
+      .populate({
+        path: "user",
+      })
+      .populate({
+        path: "job",
+      });
+    await proposalRes(proposal.user, proposal.job, proposal, "Rejected");
     req.flash("success", "Proposal details sent to applicant.");
     res.redirect(`/employers/${id}`);
   })
@@ -276,7 +318,7 @@ app.post(
 
     const proposal = await Proposal.findByIdAndUpdate(pId, {
       status: "Accepted",
-    });
+    }).populate("user");
 
     const job = await Job.findById(proposal.job);
 
@@ -284,6 +326,8 @@ app.post(
     contract.proposal = proposal;
 
     job.contract = contract;
+
+    await proposalRes(proposal.user, job, proposal, "Accepted");
 
     await job.save();
 
@@ -364,27 +408,33 @@ app.get(
 );
 
 // post req to login as user
-app.post("/users/login", async (req, res) => {
-  const { user } = req.body;
-  const foundUser = await User.findOne({ email: user.email, isVerified: true });
-  if (!foundUser) {
-    req.flash(
-      "error",
-      "Invalid credentials or account not verified. Please try again."
-    );
-    return res.redirect("/users/login");
-  }
-  const verified = await bcrypt.compare(user.password, foundUser.password);
-  if (verified) {
-    req.session.user = foundUser;
-    const redirectUrl = req.session.returnTo || `/user/${foundUser._id}`;
-    req.flash("success", `Welcome back ${foundUser.username}`);
-    res.redirect(redirectUrl);
-  } else {
-    req.flash("error", "Invalid credentials, Please try again.");
-    res.redirect("/users/login");
-  }
-});
+app.post(
+  "/users/login",
+  decorateAsync(async (req, res) => {
+    const { user } = req.body;
+    const foundUser = await User.findOne({
+      email: user.email,
+      isVerified: true,
+    });
+    if (!foundUser) {
+      req.flash(
+        "error",
+        "Invalid credentials or account not verified. Please try again."
+      );
+      return res.redirect("/users/login");
+    }
+    const verified = await bcrypt.compare(user.password, foundUser.password);
+    if (verified) {
+      req.session.user = foundUser;
+      const redirectUrl = req.session.returnTo || `/user/${foundUser._id}`;
+      req.flash("success", `Welcome back ${foundUser.username}`);
+      res.redirect(redirectUrl);
+    } else {
+      req.flash("error", "Invalid credentials, Please try again.");
+      res.redirect("/users/login");
+    }
+  })
+);
 
 // post route to register new user
 app.post(
@@ -395,7 +445,7 @@ app.post(
     const encUser = await encryptPassword(user);
     encUser.verification_token = new Date().getTime();
     const newUser = new User(encUser);
-    await sendEmail("Verification", "Verify Account", encUser);
+    await sendEmail("Verification", "user", "Verify Account", encUser);
     await newUser.save();
     req.flash(
       "success",
@@ -405,22 +455,25 @@ app.post(
   })
 );
 
-app.get("/verifyEmail/:emailId/:token", async (req, res) => {
-  const { emailId, token } = req.params;
-  const user = await User.findOne({
-    email: emailId,
-    verification_token: parseInt(token),
-  });
+app.get(
+  "/verifyEmail/:emailId/:token/user",
+  decorateAsync(async (req, res) => {
+    const { emailId, token } = req.params;
+    const user = await User.findOne({
+      email: emailId,
+      verification_token: parseInt(token),
+    });
 
-  if (!user) {
-    req.flash("error", "User doesn't exist or verification token is expired");
-    return res.redirect("/register");
-  }
-  user.isVerified = true;
-  await user.save();
-  req.flash("success", "Account verified successfully, you can now login.");
-  res.redirect("/users/login");
-});
+    if (!user) {
+      req.flash("error", "User doesn't exist or verification token is expired");
+      return res.redirect("/register");
+    }
+    user.isVerified = true;
+    await user.save();
+    req.flash("success", "Account verified successfully, you can now login.");
+    res.redirect("/users/login");
+  })
+);
 
 // put route to edit user profile
 app.put(
@@ -489,6 +542,7 @@ app.post(
     await employer.save();
     await user.save();
     await newProposal.save();
+    await sendProposal(user, job, employer, newProposal);
 
     req.flash("success", "Thank you for applying, check status in proposals.");
     res.redirect(`/user/${user._id}`);
@@ -540,6 +594,23 @@ app.get(
 // Middleware for non-existing other routes
 app.use((req, res) => {
   throw new AppEror("Page or resource not found.!", 400);
+});
+
+// Handle mongoose errors.
+app.use((err, req, res, next) => {
+  if (err.CastError) {
+    err.message = "Key or value doesn't exist.";
+    err.status = 400;
+  }
+  if (err.ValidationError) {
+    err.message = "Validation failed, missing a field.";
+    err.status = 404;
+  }
+  if (err.code === 11000) {
+    err.message = "Account already exists.";
+    err.status = 409;
+  }
+  next(err);
 });
 
 // Custom error handling middleware
