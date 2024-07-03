@@ -28,3 +28,16 @@
   <p>You haven't posted any job yet.!</p>
   <% } %>
 </div>
+
+<% if (employer.reviews.length) {%>
+<h4>Feedback</h4>
+<ul>
+  <% for (let review of employer.reviews){ %>
+  <p>Job Title: <%= review.jobTitle %></p>
+  <p class="starability-result" data-rating="<%= review.rating %>">
+  </p>
+  <p> Comment: <%- review.text %></p>
+  <% } %>
+</ul>
+
+<% } %>

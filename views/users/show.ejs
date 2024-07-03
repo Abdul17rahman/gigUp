@@ -72,3 +72,16 @@
     </div>
   </div>
 </div>
+
+<% if (foundUser.reviews.length) {%>
+<h4>Feedback</h4>
+<ul>
+  <% for (let review of foundUser.reviews){ %>
+  <p>Job Title: <%= review.jobTitle %></p>
+  <p class="starability-result" data-rating="<%= review.rating %>">
+  </p>
+  <p> Comment: <%- review.text %></p>
+  <% } %>
+</ul>
+
+<% } %>

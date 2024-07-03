@@ -26,6 +26,7 @@ const jobsSchema = new Schema({
   },
   status: {
     type: String,
+    enum: ["active", "taken"],
     default: "active",
   },
   numOfPos: {

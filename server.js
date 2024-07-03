@@ -24,6 +24,7 @@ const Employer = require("./models/emp.model");
 const User = require("./models/user.model");
 const Proposal = require("./models/proposal.model");
 const Contract = require("./models/contract.model");
+const Review = require("./models/review.model");
 
 const app = express();
 connectDb("gigUp");
@@ -75,7 +76,7 @@ app.get("/", (req, res) => {
 app.get(
   "/jobs",
   decorateAsync(async (req, res) => {
-    const availableJobs = await Job.find({});
+    const availableJobs = await Job.find({ status: "active" });
     if (!availableJobs) {
       throw new AppEror("Sorry there are no jobs available.", 404);
     }
@@ -147,7 +148,12 @@ app.get(
   isEmployer,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
-    const foundEmp = await Employer.findById(id).populate("jobs");
+    const foundEmp = await Employer.findById(id)
+      .populate("jobs")
+      .populate({
+        path: "reviews",
+        match: { employer: id },
+      });
     if (!foundEmp) {
       throw new AppEror("Employer doesn't exist in our database.!", 400);
     }
@@ -204,6 +210,7 @@ app.post(
   })
 );
 
+// verify employer account
 app.get(
   "/verifyEmail/:emailId/:token/employer",
   decorateAsync(async (req, res) => {
@@ -326,6 +333,7 @@ app.post(
     contract.proposal = proposal;
 
     job.contract = contract;
+    job.status = "taken";
 
     await proposalRes(proposal.user, job, proposal, "Accepted");
 
@@ -375,6 +383,29 @@ app.put(
   })
 );
 
+// employer reviews.
+app.post(
+  "/employers/:empId/review/:id/job/",
+  authenticateEmp,
+  decorateAsync(async (req, res) => {
+    const { id, empId } = req.params;
+    const { title } = req.query;
+    const { review } = req.body;
+    const user = await User.findById(id);
+
+    const newReview = new Review(review);
+    newReview.jobTitle = title;
+    newReview.user = user;
+
+    user.reviews.push(newReview);
+
+    await newReview.save();
+    await user.save();
+    req.flash("success", "Thank you for your feedback.!");
+    res.redirect(`/employers/${empId}`);
+  })
+);
+
 // Users routes
 app.get("/register", (req, res) => {
   res.render("users/register");
@@ -392,7 +423,12 @@ app.get(
   isUser,
   decorateAsync(async (req, res) => {
     const { id } = req.params;
-    const foundUser = await User.findById(id).populate("proposals");
+    const foundUser = await User.findById(id)
+      .populate("proposals")
+      .populate({
+        path: "reviews",
+        match: { user: id },
+      });
     if (!foundUser) {
       req.flash("error", "User account doesn't exit!.");
       return res.redirect("/register");
@@ -455,6 +491,7 @@ app.post(
   })
 );
 
+// verify user account
 app.get(
   "/verifyEmail/:emailId/:token/user",
   decorateAsync(async (req, res) => {
@@ -588,6 +625,30 @@ app.get(
       (c) => c.proposal && c.proposal.job
     );
     res.render("users/contracts", { contracts });
+  })
+);
+
+// User reviews.
+app.post(
+  "/user/:id/review/:empId/job/",
+  authenticateUser,
+  decorateAsync(async (req, res) => {
+    const { id, empId } = req.params;
+    const { title } = req.query;
+    const { review } = req.body;
+    // const user = await User.findById(id);
+    const employer = await Employer.findById(empId);
+
+    const newReview = new Review(review);
+    newReview.jobTitle = title;
+    newReview.employer = employer;
+
+    employer.reviews.push(newReview);
+
+    await newReview.save();
+    await employer.save();
+    req.flash("success", "Thank you for your feedback.!");
+    res.redirect(`/user/${id}`);
   })
 );
 
