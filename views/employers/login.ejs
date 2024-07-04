@@ -1,28 +1,43 @@
-<div class="container">
-	<h3>Employer Login.</h3>
-	<form method="post" action="/employers/login" class="validatedForm" novalidate>
-		<div class="mb-3">
-			<label for="email" class="form-label">Email:</label>
-			<input type="text" class="form-control" name="emp[email]" id="email" aria-describedby="emailHelp" required>
-			<div class="valid-feedback">
-				Looks good!
-			</div>
-			<div class="invalid-feedback">
-				Please enter your email.!
-			</div>
-		</div>
-		<div class="mb-3">
-			<label for="password" class="form-label">Password:</label>
-			<input type="password" class="form-control" name="emp[password]" id="password"
-				aria-describedby="passwordHelp" required>
-			<div class="valid-feedback">
-				Looks good!
-			</div>
-			<div class="invalid-feedback">
-				Please provide your password.!
-			</div>
-		</div>
+<div class="row">
+  <div class="col-md-7">
+    <div class="login">
+      <h3>Employer Login.</h3>
+      <form method="post" action="/employers/login" class="validatedForm" novalidate>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email:</label>
+          <input type="text" class="form-control" name="emp[email]" id="email" aria-describedby="emailHelp" required>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            Please enter your email.!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password:</label>
+          <input type="password" class="form-control" name="emp[password]" id="password" aria-describedby="passwordHelp" required>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            Please provide your password.!
+          </div>
+        </div>
 
-		<button type="submit" class="btn btn-primary">Login</button>
-	</form>
+        <a href="/employers/register" class="btn btn-primary">Register</a>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="detail">
+      <h3>Contact Us</h3>
+      <p><strong>Address:</strong></p>
+      <p>gigUp Inc.</p>
+      <p>Plot 4, Kampala-Road</p>
+      <p>Kampala, Uganda.</p>
+      <i class="bi bi-envelope-fill"></i> abdulnsamba@gmail.com
+      <i class="bi bi-person-fill"></i> +256 783 555 307
+    </div>
+  </div>
 </div>

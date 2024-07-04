@@ -1,3 +1,14 @@
+/* General styles */
+li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: #343a40;
+}
+
+/* Home page styles*/
+
 .hero-section {
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url("../images/proffesional_users.jpg") no-repeat center center;
@@ -62,4 +73,86 @@
 
 .info-section .partners img:hover {
   transform: scale(1.1);
+}
+
+/*FAQ Styles*/
+
+.accordion-button {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: bold;
+  border: none;
+  outline: none;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #fff;
+  background-color: #007bff;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-body {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.container h2 {
+  font-family: "Arial", sans-serif;
+  color: #007bff;
+}
+
+.accordion-item {
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-header {
+  font-family: "Arial", sans-serif;
+}
+
+/* Jobs container styling */
+.jobs-container ul {
+  margin: 0;
+  padding: 0;
+}
+.job {
+  background: #f8f9fa;
+  padding: 2rem;
+  margin: 1rem 0;
+  transition: all 0.3s ease-in;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.job:hover {
+  background-color: #ffffff; /* Lighter background on hover */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+.view-job,
+.job-employer,
+.detail {
+  background: #f8f9fa;
+  padding: 2rem;
+  margin: 1rem 0;
+  transition: all 0.3s ease-in;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.view-job:hover {
+  background-color: #ffffff; /* Lighter background on hover */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+.login {
+  background: #f2f7fa;
+  padding: 2rem;
+  margin: 1rem 0;
+  transition: all 0.3s ease-in;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.login:hover {
+  background-color: #dcecfc; /* Lighter background on hover */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }

@@ -85,12 +85,15 @@ app.get(
     const availableJobs = await Job.find({
       status: "active",
       numOfPos: { $gt: 0 },
-    }).sort({
-      created_at: -1,
-    });
+    })
+      .sort({
+        created_at: -1,
+      })
+      .populate("employer");
     if (!availableJobs.length) {
       throw new AppEror("Sorry there are no jobs available.", 404);
     }
+    // console.log(availableJobs);
     res.render("jobs/jobs", { availableJobs });
   })
 );

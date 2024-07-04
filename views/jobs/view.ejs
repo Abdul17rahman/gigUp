@@ -1,31 +1,51 @@
-<div class="view-single-job">
-  <h4>Job Title: <%= foundJob.title %>
-  </h4>
-  <p>Description: <%= foundJob.description %>
-  </p>
-  <p>Employer: <% if (foundJob.employer) {%>
-    <%= foundJob.employer.company %>
-    <% } %>
-  </p>
-  <p>Location: <%= foundJob.location %>
-  </p>
-  <p>Duration: <%= foundJob.duration %>
-  </p>
-  <p>Positions Available: <%= foundJob.numOfPos %>
-  </p>
-  <p>Status: <%= foundJob.status %>
-  </p>
-  <p>Posted on: <%= foundJob.created_at %>
-  </p>
-  <a href="/jobs" class="btn btn-info">Back</a>
-  <% if (employer && employer._id.toString()===foundJob.employer._id.toString()) { %>
-  <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
-  <form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=DELETE">
-    <button type="submit" class="btn btn-danger">Delete</button>
-  </form>
-  <% } else { %>
-  <a href="/jobs/<%- foundJob._id %>/apply" class="btn btn-success">Apply</a>
-  <% } %>
+<div class="row">
+  <div class="col-md-8">
+    <div class="view-job">
+      <h4><%= foundJob.title %>
+      </h4>
+      <p>Description: <%= foundJob.description %>
+      </p>
+      <p>Status: <%= foundJob.status %>
+      </p>
+      <p><i class="bi bi-geo-alt-fill"></i> <%= foundJob.location %>
+      </p>
+      <p><i class="bi bi-alarm"></i> <%= foundJob.duration %>
+      </p>
+      <p><i class="bi bi-person-fill"></i> <%= foundJob.numOfPos %>
+      </p>
+      <p><i class="bi bi-calendar-date"></i> <%= foundJob.created_at %>
+      </p>
+      <a href="/jobs" class="btn btn-info">Back</a>
+      <% if (employer && employer._id.toString()===foundJob.employer._id.toString()) { %>
+      <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
+      <form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=DELETE">
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </form>
+      <% } else { %>
+      <a href="/jobs/<%- foundJob._id %>/apply" class="btn btn-success">Apply</a>
+      <% } %>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="job-employer">
+      <% if (foundJob.employer) {%>
+      <h4>
+        Employer info
+      </h4>
+      <% if (foundJob.employer.company){ %>
+      <p>
+        <i class="bi bi-layers"></i>
+        <%= foundJob.employer.company %>
+      </p>
+      <% } %>
+      <p><i class="bi bi-geo-alt-fill"></i> <%= foundJob.employer.location %>
+      </p>
+      <p><i class="bi bi-person"></i> <%= foundJob.employer.username %>
+      </p>
+      <% } %>
+
+    </div>
+  </div>
 </div>
 
 <!-- Edit Modal -->

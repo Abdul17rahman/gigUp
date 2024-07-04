@@ -1,66 +1,110 @@
-<div class="container">
-	<h3>Employer's signup page.</h3>
-	<form method="post" action="/employers" class="validatedForm" novalidate>
-		<div class="mb-3">
-			<label for="username" class="form-label">Username:</label>
-			<input type="text" class="form-control" name="emp[username]" id="username" aria-describedby="usernameHelp"
-				required>
-			<div class="valid-feedback">
-				Looks good!
-			</div>
-			<div class="invalid-feedback">
-				Please enter your username.!
-			</div>
-		</div>
-		<div class="mb-3">
-			<label for="company" class="form-label">Company Name:</label>
-			<input type="text" class="form-control" name="emp[company]" id="company" aria-describedby="companyHelp">
-			<div id="companyHelp" class="form-text">This field is optional.</div>
-		</div>
-		<div class="mb-3">
-			<label for="location" class="form-label">Location:</label>
-			<input type="location" class="form-control" name="emp[location]" id="location"
-				aria-describedby="locationHelp" required>
-			<div class="valid-feedback">
-				Looks good!
-			</div>
-			<div class="invalid-feedback">
-				Please provide your location.!
-			</div>
-		</div>
-		<div class="mb-3">
-			<label for="email" class="form-label">Email:</label>
-			<input type="email" class="form-control" name="emp[email]" id="email" aria-describedby="empHelp" required>
-			<div class="valid-feedback">
-				Looks good!
-			</div>
-			<div class="invalid-feedback">
-				Employer's email is required.!
-			</div>
-		</div>
-		<div class="mb-3">
-			<label for="password" class="form-label">Password:</label>
-			<input type="password" class="form-control" name="emp[password]" id="password"
-				aria-describedby="passwordHelp" required>
-			<div class="valid-feedback">
-				Looks good!
-			</div>
-			<div class="invalid-feedback">
-				Please enter your password.!
-			</div>
-		</div>
-		<div class="mb-3">
-			<label for="contact" class="form-label">Contact:</label>
-			<input type="text" class="form-control" name="emp[contact]" id="contact" aria-describedby="contactHelp"
-				required>
-			<div id="contactHelp" class="form-text">It will only be shared with succesfull candidates.</div>
-			<div class="valid-feedback">
-				Looks good!
-			</div>
-			<div class="invalid-feedback">
-				Please enter your contact.!
-			</div>
-		</div>
-		<button type="submit" class="btn btn-primary">SignUp</button>
-	</form>
+<div class="row">
+  <div class="col-md-7">
+    <div class="login">
+      <h3>Employer's signup page.</h3>
+      <form method="post" action="/employers" class="validatedForm" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username:</label>
+          <input type="text" class="form-control" name="emp[username]" id="username" aria-describedby="usernameHelp" required>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            Please enter your username.!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="company" class="form-label">Company Name:</label>
+          <input type="text" class="form-control" name="emp[company]" id="company" aria-describedby="companyHelp">
+          <div id="companyHelp" class="form-text">This field is optional.</div>
+        </div>
+        <div class="mb-3">
+          <label for="location" class="form-label">Location:</label>
+          <input type="location" class="form-control" name="emp[location]" id="location" aria-describedby="locationHelp" required>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            Please provide your location.!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email:</label>
+          <input type="email" class="form-control" name="emp[email]" id="email" aria-describedby="empHelp" required>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            Employer's email is required.!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password:</label>
+          <input type="password" class="form-control" name="emp[password]" id="password" aria-describedby="passwordHelp" required>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            Please enter your password.!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact:</label>
+          <input type="text" class="form-control" name="emp[contact]" id="contact" aria-describedby="contactHelp" required>
+          <div id="contactHelp" class="form-text">It will only be shared with succesfull candidates.</div>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            Please enter your contact.!
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">SignUp</button>
+        <a href="/employers/login" class="btn btn-primary">Login</a>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="detail">
+      <h3>FAQs</h3>
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="definition">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              What is gigUp?
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="definition" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              gigUp is an online platform that connects freelancers and employers for various job opportunities.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="create-account">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#create-acct" aria-expanded="false" aria-controls="create-acct">
+              How do I create an account?
+            </button>
+          </h2>
+          <div id="create-acct" class="accordion-collapse collapse" aria-labelledby="create-account" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              To create an account, click on the 'Register' button on the top right corner of the homepage and fill in the required details.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="contact">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              How can I contact support?
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="contact" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              You can reach our support team via the 'Contact Us' on login page or email us at support@gigup.com.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
