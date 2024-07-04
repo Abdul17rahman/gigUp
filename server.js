@@ -10,7 +10,11 @@ const flash = require("connect-flash");
 
 const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
-const { decorateAsync, encryptPassword } = require("./utils/utils");
+const {
+  decorateAsync,
+  encryptPassword,
+  formatjobTime,
+} = require("./utils/utils");
 const { sendEmail, sendProposal, proposalRes } = require("./utils/email");
 const Job = require("./models/jobs.model");
 const {
@@ -69,34 +73,45 @@ app.use(methodOverride("_method"));
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
+// Home page
 app.get("/", (req, res) => {
   res.render("index");
 });
 
+// View all available jobs
 app.get(
   "/jobs",
   decorateAsync(async (req, res) => {
-    const availableJobs = await Job.find({ status: "active" });
-    if (!availableJobs) {
+    const availableJobs = await Job.find({
+      status: "active",
+      numOfPos: { $gt: 0 },
+    }).sort({
+      created_at: -1,
+    });
+    if (!availableJobs.length) {
       throw new AppEror("Sorry there are no jobs available.", 404);
     }
     res.render("jobs/jobs", { availableJobs });
   })
 );
 
+// View a single job
 app.get(
   "/jobs/:id",
   decorateAsync(async (req, res) => {
     const { id } = req.params;
-    const foundJob = await Job.findById(id).populate("employer");
-    if (!foundJob) {
+    const job = await Job.findById(id).populate("employer");
+    if (!job) {
       req.flash("error", "This job was delisted or taken already.!");
       return res.redirect("/jobs");
     }
+    const foundJob = job.toObject();
+    foundJob.created_at = formatjobTime(foundJob.created_at);
     res.render("jobs/view", { foundJob });
   })
 );
 
+// Edit employer details
 app.put(
   "/employers/:empId/jobs/:id",
   authenticateEmp,
@@ -111,6 +126,7 @@ app.put(
   })
 );
 
+// delete an employer account
 app.delete(
   "/employers/:empId/jobs/:jobId",
   authenticateEmp,
@@ -123,15 +139,7 @@ app.delete(
   })
 );
 
-// Employer routes.
-// app.get(
-//   "/employers",
-//   decorateAsync(async (req, res) => {
-//     const employers = await Employer.find({});
-//     res.render("employers/index", { employers });
-//   })
-// );
-
+// Add a new employer form.
 app.get("/employers/register", (req, res) => {
   res.render("employers/register");
 });
@@ -267,7 +275,6 @@ app.post(
     const { id } = req.params;
     const employer = await Employer.findById(id);
     const { job } = req.body;
-    job.created_date = Date.now().toString();
     const addJob = new Job(job);
     employer.jobs.push(addJob);
     addJob.employer = employer;
@@ -329,11 +336,17 @@ app.post(
 
     const job = await Job.findById(proposal.job);
 
+    if (job.numOfPos > 1) {
+      job.numOfPos--;
+    }
+
     const contract = new Contract({ status: "Running" });
     contract.proposal = proposal;
 
     job.contract = contract;
-    job.status = "taken";
+    if (job.numOfPos === 1) {
+      job.status = "taken";
+    }
 
     await proposalRes(proposal.user, job, proposal, "Accepted");
 
@@ -387,6 +400,7 @@ app.put(
 app.post(
   "/employers/:empId/review/:id/job/",
   authenticateEmp,
+  validate("review"),
   decorateAsync(async (req, res) => {
     const { id, empId } = req.params;
     const { title } = req.query;
@@ -558,6 +572,7 @@ app.get(
 app.post(
   "/jobs/:jobId/apply",
   authenticateUser,
+  validate("proposal"),
   decorateAsync(async (req, res) => {
     const { jobId } = req.params;
     const { proposal } = req.body;
@@ -632,6 +647,7 @@ app.get(
 app.post(
   "/user/:id/review/:empId/job/",
   authenticateUser,
+  validate("review"),
   decorateAsync(async (req, res) => {
     const { id, empId } = req.params;
     const { title } = req.query;

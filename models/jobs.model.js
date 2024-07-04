@@ -33,8 +33,8 @@ const jobsSchema = new Schema({
     type: Number,
   },
   created_at: {
-    type: String,
-    default: Date.now().toString(),
+    type: Date,
+    default: Date.now,
   },
   proposals: [
     {

@@ -37,4 +37,29 @@ const userSchema = Joi.object({
     "any.required": "User data is missing.",
   });
 
-module.exports = { jobSchema, employerSchema, userSchema };
+const reviewSchema = Joi.object({
+  rating: Joi.number(),
+  text: Joi.string().required(),
+})
+  .required()
+  .messages({
+    "any.required": "Review data is missing.",
+  });
+
+const proposalSchema = Joi.object({
+  price: Joi.number().required().min(1),
+  period: Joi.string(),
+  cover: Joi.string().required(),
+})
+  .required()
+  .messages({
+    "any.required": "Proposal data is required.",
+  });
+
+module.exports = {
+  jobSchema,
+  employerSchema,
+  userSchema,
+  reviewSchema,
+  proposalSchema,
+};

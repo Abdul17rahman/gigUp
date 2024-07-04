@@ -15,7 +15,7 @@
   </p>
   <p>Status: <%= foundJob.status %>
   </p>
-  <p>Posted on: <%= foundJob.created_date %>
+  <p>Posted on: <%= foundJob.created_at %>
   </p>
   <a href="/jobs" class="btn btn-info">Back</a>
   <% if (employer && employer._id.toString()===foundJob.employer._id.toString()) { %>
