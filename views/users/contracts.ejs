@@ -1,46 +1,58 @@
 <% if (contracts.length){ %>
 <h2>Contracts</h2>
 <% for (let contract of contracts){ %>
-<div class="card mb-3">
-  <div class="card-body">
-    <h5 class="card-title">Job Title: <%= contract.proposal.job.title %></h5>
-    <h6 class="card-subtitle mb-2 text-muted">Agreed price: $<%= contract.proposal.price %>-<%- contract.proposal.period %></h6>
-    <h6 class="card-subtitle mb-2 text-muted">Status: <%= contract.status %></h6>
-    <h6 class="card-subtitle mb-2 text-muted">Duration: <%= contract.proposal.job.duration %></h6>
-    <p class="card-text">Job Details: <%= contract.proposal.job.description %></p>
-    <% if (contract.status === "Running") {%>
-    <div class="card-footer bg-warning">
-      This job is currently running.
-    </div>
-    <% }else{ %>
-    <div class="card-footer bg-success mb-3">
-      This job was executed successfully, Please leave a feedback.
-    </div>
-    <form action="/user/<%= contract.proposal.user %>/review/<%= contract.proposal.job.employer %>/job/?title=<%= contract.proposal.job.title %>" method="post">
-      <div class="mb-3">
-        <label for="rating" class="form-label">Rating</label>
-        <fieldset class="starability-basic">
-          <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
-          <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-          <label for="first-rate1" title="Terrible">1 star</label>
-          <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-          <label for="first-rate2" title="Not good">2 stars</label>
-          <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-          <label for="first-rate3" title="Average">3 stars</label>
-          <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-          <label for="first-rate4" title="Very good">4 stars</label>
-          <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-          <label for="first-rate5" title="Amazing">5 stars</label>
-        </fieldset>
-        <textarea class="form-control" rows="3" placeholder="Leave a comment here" id="floatingTextarea" name="review[text]"></textarea>
+<div class="row">
+  <div class="col-md-12">
+    <div class="view-job">
+      <div>
+        <p class="text-primary"><strong><%- contract.status.toUpperCase() %></strong></p>
+        <h5><%= contract.proposal.job.title %></h5>
+        <h6 class="text-muted"><i class="bi bi-tag"></i> $<%= contract.proposal.price %>-<%- contract.proposal.period %></h6>
+
+        <h6 class="text-muted"><i class="bi bi-alarm"></i> <%= contract.proposal.job.duration %></h6>
+        <p class="card-text"><i class="bi bi-info-square"></i> <%= contract.proposal.job.description %></p>
+        <% if (contract.status === "Running") {%>
+        <div class="col-md-12">
+          <h3 class="bg-warning border rounded p-2">
+            This contract is currently running.
+          </h3>
+        </div>
+        <% }else{ %>
+        <div class="border rounded bg-success p-2">
+          Please leave a feedback below.!
+        </div>
+        <form action="/user/<%= contract.proposal.user %>/review/<%= contract.proposal.job.employer %>/job/?title=<%= contract.proposal.job.title %>" method="post">
+          <div class="mb-3">
+            <label for="rating" class="form-label mt-2"><strong>Rating</strong></label>
+            <fieldset class="starability-basic">
+              <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+              <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+              <label for="first-rate1" title="Terrible">1 star</label>
+              <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+              <label for="first-rate2" title="Not good">2 stars</label>
+              <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+              <label for="first-rate3" title="Average">3 stars</label>
+              <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+              <label for="first-rate4" title="Very good">4 stars</label>
+              <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+              <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+            <textarea class="form-control" rows="3" placeholder="Leave a comment here" id="floatingTextarea" name="review[text]"></textarea>
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <% } %>
       </div>
-      <button type="submit" class="btn btn-success">Submit</button>
-    </form>
-    <% } %>
+
+    </div>
   </div>
 </div>
 <% } %>
 
 <% }else{ %>
-<h3>You currently have no running contracts.</h3>
+<div class="row">
+  <div class="col-md-12">
+    <h3 class="text-danger border rounded p-2">You currently have no contracts.</h3>
+  </div>
+</div>
 <% } %>

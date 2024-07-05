@@ -1,38 +1,62 @@
 <% if (empProposals.length) { %>
 <h2>Proposals</h2>
 <% for (let proposal of empProposals){ %>
-<div class="card mb-3">
-  <div class="card-body">
-    <h5 class="card-title">Job: <%- proposal.job.title %>.</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %>-<%- proposal.period %>.</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %>.</h6>
-    <p class="card-text">Cover letter: <%- proposal.cover %></p>
-    <h5 class="card-title">Applicant: <%- proposal.user.username %></h5>
-    <p class="card-text">Applicant Bio: <%- proposal.user.bio %></p>
-    <% if (proposal.status === "Rejected") {%>
-    <h5 class="bg-danger p-2"> You rejected this proposal.!</h5>
-    <% } else if (proposal.status === "Accepted") { %>
-    <h5 class="bg-success p-2"> You accepted this proposal.!</h5>
-    <% } else { %>
-    <!-- <a href="#" class="btn btn-primary m-1">Counter Offer</a> -->
-    <div class="d-flex gap-1">
-      <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/reject?_method=PUT" method="post">
-        <button type="submit" class="btn btn-danger">Reject</button>
-      </form>
-      <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/accept" method="post">
-        <button type="submit" class="btn btn-success">Accept</button>
-      </form>
+<div class="row">
+  <div class="col-md-12">
+    <div class="view-job">
+      <div>
+        <div>
+          <p class="text-primary"><strong><%- proposal.status.toUpperCase() %></strong></p>
+          <div class="row">
+            <div class="col-md-7">
+              <h5><%- proposal.job.title %>.</h5>
+              <h6 class="mb-2 text-muted"><i class="bi bi-tag"></i> $<%- proposal.price %>-<%- proposal.period %></h6>
+              <p><i class="bi bi-info-square"></i> <%- proposal.cover %></p>
+            </div>
+            <div class="col-md-5">
+              <h5 class="card-title"><i class="bi bi-person-fill"></i> <%- proposal.user.username %></h5>
+              <p class="card-text">Bio: <%- proposal.user.bio %></p>
+              <p><i class="bi bi-envelope-fill"></i> <%- proposal.user.email %></p>
+            </div>
+          </div>
+
+
+
+
+          <% if (proposal.status === "Rejected") {%>
+          <div class="col-md-12 my-2">
+            <h5 class="bg-danger p-2"> You rejected this proposal.!</h5>
+          </div>
+          <% } else if (proposal.status === "Accepted") { %>
+          <div class="col-md-12 my-2">
+            <h5 class="bg-success p-2 border rounded"> You accepted this proposal.!</h5>
+          </div>
+          <% } else { %>
+
+          <div class="col-md-12 my-1">
+            <div class="d-flex gap-1">
+              <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/reject?_method=PUT" method="post">
+                <button type="submit" class="btn btn-danger">Reject</button>
+              </form>
+              <form action="/employers/<%- proposal.job.employer %>/proposal/<%- proposal._id %>/accept" method="post">
+                <button type="submit" class="btn btn-success">Accept</button>
+              </form>
+            </div>
+          </div>
+
+          <% } %>
+
+        </div>
+      </div>
     </div>
-
-    <% } %>
-
   </div>
 </div>
 <% } %>
 
 <% } else { %>
-<div>
-  <h3>You currently have no job proposals.</h3>
-  <p>Click here to apply <a href="/jobs">here</a></p>
+<div class="row">
+  <div class="col-md-12">
+    <h3 class="text-danger border rounded p-2">You currently have no job proposals.</h3>
+  </div>
 </div>
 <% } %>

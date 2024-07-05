@@ -5,7 +5,7 @@
       </h4>
       <p>Description: <%= foundJob.description %>
       </p>
-      <p>Status: <%= foundJob.status %>
+      <p>Status: <%= foundJob.status.toUpperCase() %>
       </p>
       <p><i class="bi bi-geo-alt-fill"></i> <%= foundJob.location %>
       </p>
@@ -15,14 +15,17 @@
       </p>
       <p><i class="bi bi-calendar-date"></i> <%= foundJob.created_at %>
       </p>
-      <a href="/jobs" class="btn btn-info">Back</a>
       <% if (employer && employer._id.toString()===foundJob.employer._id.toString()) { %>
-      <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
-      <form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=DELETE">
-        <button type="submit" class="btn btn-danger">Delete</button>
-      </form>
+      <div class="d-flex justify-content-end">
+        <a href="#" class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#edit-job">Edit</a>
+        <form method="post" action="/employers/<%= foundJob.employer._id %>/jobs/<%= foundJob._id %>?_method=DELETE">
+          <button type="submit" class="btn btn-danger ms-2">Delete</button>
+        </form>
+      </div>
       <% } else { %>
+      <% if (!employer){ %>
       <a href="/jobs/<%- foundJob._id %>/apply" class="btn btn-success">Apply</a>
+      <% } %>
       <% } %>
     </div>
   </div>

@@ -1,36 +1,43 @@
-<div class="cotainer-fluid">
-  <h2>Profile Page</h2>
-  <p>Name: <%= foundUser.username %>
-  </p>
-  <p>Bio: <%= foundUser.bio %>
-  </p>
-  <p>Email: <%= foundUser.email %>
-  </p>
-  <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-user">Edit Bio</a>
-  <form action="/user/<%= foundUser._id %>?_method=DELETE" method="post">
-    <button type="submit" class="btn btn-danger my-2">Delete Account</button>
-  </form>
+<div class="row">
+  <div class="col-md-7">
+    <div class="profile">
 
-  <h3>Current Proposals:</h3>
-
-  <div class="list-group">
-    <% if (foundUser.jobs){ %>
-
-    <% for (let job of foundUser.jobs){ %>
-    <div class="card mb-2">
-      <div class="card-body">
-        <a href="#" class="btn btn-info"><%- job.title %></a>
+      <h2>Profile Page</h2>
+      <p>Name: <%= foundUser.username %>
+      </p>
+      <p>Bio: <%= foundUser.bio %>
+      </p>
+      <p>Email: <%= foundUser.email %>
+      </p>
+      <div class="d-flex justify-content-end">
+        <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-user">Edit Bio</a>
+        <form action="/user/<%= foundUser._id %>?_method=DELETE" method="post">
+          <button type="submit" class="btn btn-danger ms-2">Delete Account</button>
+        </form>
       </div>
+
     </div>
-    <% } %>
-
-    <% } else { %>
-
-    <p>You haven't applied for any job yet.!</p>
-
-    <% } %>
   </div>
+  <div class="col-md-5">
+    <div class="detail">
+      <h4>Current Proposals:</h4>
+      <% if (foundUser.jobs){ %>
 
+      <% for (let job of foundUser.jobs){ %>
+      <div class="card mb-2">
+        <div class="card-body">
+          <a href="#" class="btn btn-info"><%- job.title %></a>
+        </div>
+      </div>
+      <% } %>
+
+      <% } else { %>
+
+      <p>You haven't applied for any job yet.!</p>
+
+      <% } %>
+    </div>
+  </div>
 </div>
 
 <!-- Edit Modal -->
@@ -73,15 +80,24 @@
   </div>
 </div>
 
+
 <% if (foundUser.reviews.length) {%>
-<h4>Feedback</h4>
-<ul>
-  <% for (let review of foundUser.reviews){ %>
-  <p>Job Title: <%= review.jobTitle %></p>
-  <p class="starability-result" data-rating="<%= review.rating %>">
-  </p>
-  <p> Comment: <%- review.text %></p>
-  <% } %>
-</ul>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="rating p-4 border rounded">
+      <h4 class="mb-4">Feedback</h4>
+      <ul class="list-unstyled">
+        <% for (let review of foundUser.reviews){ %>
+        <li class="mb-4 p-3 border rounded bg-light">
+          <h5 class="mb-2"><%= review.jobTitle %></h5>
+          <p class="starability-result" data-rating="<%= review.rating %>"></p>
+          <p><%- review.text %></p>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <% } %>

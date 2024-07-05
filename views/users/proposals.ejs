@@ -1,31 +1,38 @@
 <% if (proposals.length) { %>
 <h2>Proposals</h2>
 <% for (let proposal of proposals){ %>
-<div class="card mb-3">
-  <div class="card-body">
-    <% if (proposal.status === "Rejected"){ %>
-    <h5 class="bg-danger p-2"> This proposal was rejected.!</h5>
-    <% }else if (proposal.status === "Accepted"){ %>
-    <h5 class="bg-success p-2">Congrats, this proposal was accepted.!</h5>
-    <% } else{ %>
-    <h5 class="text-warning"> This proposal is under employer's review.!</h5>
-    <% } %>
-    <h5 class="card-title">Job Title: <%- proposal.job.title %></h5>
-    <h6 class="card-subtitle mb-2 text-muted">Offer Price: $<%- proposal.price %>-<%- proposal.period %>.</h6>
-    <h6 class="card-subtitle mb-2 text-muted">Status: <%- proposal.status %></h6>
-    <p class="card-text">Cover letter: <%- proposal.cover %></p>
-    <% if (proposal.status !== "Accepted"){ %>
-    <form action="/user/<%- proposal.user %>/proposals/<%- proposal._id %>?_method=DELETE" method="post">
-      <button type="submit" class="btn btn-danger">Cancel Proposal</button>
-    </form>
-    <% } %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="view-job">
+      <div>
+        <% if (proposal.status === "Rejected"){ %>
+        <p class="text-danger"> <strong><%- proposal.status.toUpperCase() %></strong></p>
+        <% }else if (proposal.status === "Accepted"){ %>
+        <p class="text-success"> <strong><%- proposal.status.toUpperCase() %></strong></p>
+        <% } else{ %>
+        <p class="text-warning"> <strong><%- proposal.status.toUpperCase() %></strong></p>
+        <% } %>
+        <h5><%- proposal.job.title %></h5>
+        <h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-tag"></i> $<%- proposal.price %>-<%- proposal.period %>.</h6>
+        <p class="card-text"><i class="bi bi-info-square"></i> <%- proposal.cover %></p>
+        <% if (proposal.status !== "Accepted"){ %>
+        <div class="d-flex justify-content-end">
+          <form action="/user/<%- proposal.user %>/proposals/<%- proposal._id %>?_method=DELETE" method="post">
+            <button type="submit" class="btn btn-danger">Cancel Proposal</button>
+          </form>
+        </div>
+        <% } %>
+      </div>
+    </div>
   </div>
 </div>
 <% } %>
 
 <% } else { %>
-<div>
-  <h3>You currently have no job proposals.</h3>
-  <p>Click here to apply <a href="/jobs">here</a></p>
+<div class="row">
+  <div class="col-md-12">
+    <h3 class="text-danger border rounded p-2">You currently have no job proposals.</h3>
+    <p>Click here to apply <a href="/jobs">here</a></p>
+  </div>
 </div>
 <% } %>
