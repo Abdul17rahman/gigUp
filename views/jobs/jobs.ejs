@@ -17,4 +17,29 @@
     </li>
     <% } %>
   </ul>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <% if (current > 1){ %>
+      <li class="page-item">
+        <a class="page-link" href="/jobs?page=<%= current - 1 %>&limit=<%= limit %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <% } %>
+
+      <% for (let i = 1; i <= totalPages; i++){ %>
+      <li class="page-item <%= current === i ? 'active' : '' %>"><a class="page-link" href="/jobs?page=<%= i %>&limit=<%= limit %>"><%= i %></a></li>
+
+      <% } %>
+
+      <% if (current < totalPages) {%>
+      <li class="page-item">
+        <a class="page-link" href="/jobs?page=<%= current + 1 %>&limit=<%= limit %>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+
+      <% } %>
+    </ul>
+  </nav>
 </div>

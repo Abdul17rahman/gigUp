@@ -82,6 +82,16 @@ app.get("/", (req, res) => {
 app.get(
   "/jobs",
   decorateAsync(async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const skip = (page - 1) * limit;
+
+    const totalJobs = await Job.countDocuments({
+      status: "active",
+      numOfPos: { $gt: 0 },
+    });
+
     const availableJobs = await Job.find({
       status: "active",
       numOfPos: { $gt: 0 },
@@ -89,12 +99,21 @@ app.get(
       .sort({
         created_at: -1,
       })
+      .skip(skip)
+      .limit(limit)
       .populate("employer");
     if (!availableJobs.length) {
       throw new AppEror("Sorry there are no jobs available.", 404);
     }
-    // console.log(availableJobs);
-    res.render("jobs/jobs", { availableJobs });
+
+    const totalPages = Math.ceil(totalJobs / limit);
+
+    res.render("jobs/jobs", {
+      availableJobs,
+      current: page,
+      totalPages,
+      limit,
+    });
   })
 );
 
