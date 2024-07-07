@@ -2,15 +2,15 @@
   <div class="col-md-7">
     <div class="profile">
       <h2>Profile Page</h2>
-      <p>Name: <%= employer.username %>
+      <p><i class="bi bi-person-circle"></i> <%= employer.username %>
       </p>
-      <p>Company: <%= employer.company %>
+      <p><i class="bi bi-layers"></i> <%= employer.company %>
       </p>
-      <p>Email: <%= employer.email %>
+      <p><i class="bi bi-envelope"></i> <%= employer.email %>
       </p>
-      <p>Address: <%= employer.location %>
+      <p><i class="bi bi-geo-alt"></i> <%= employer.location %>
       </p>
-      <p>Contact: <%= employer.contact %>
+      <p><i class="bi bi-person-lines-fill"></i> <%= employer.contact %>
       </p>
       <div class="d-flex justify-content-end">
         <a href="/employers/<%= employer._id %>/jobs/new" class="btn btn-primary">Post a Job</a>
@@ -26,9 +26,9 @@
       <h3>Posted Jobs:</h3>
       <% if (employer.jobs.length){ %>
       <% for (let job of employer.jobs){ %>
-      <div class="card mb-2">
-        <div class="card-body">
-          <a href="#" class="btn btn-info"><%= job.title %></a>
+      <div class="mb-2">
+        <div>
+          <a href="/jobs/<%= job._id %>" class="btn btn-info"><%= job.title %></a>
         </div>
       </div>
       <% } %>

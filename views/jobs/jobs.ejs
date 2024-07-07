@@ -1,3 +1,4 @@
+<% if (availableJobs.length){ %>
 <div class="jobs-container">
   <ul>
     <% for (const job of availableJobs) { %>
@@ -43,3 +44,10 @@
     </ul>
   </nav>
 </div>
+<% }else { %>
+<div class="row">
+  <div class="col-md-12">
+    <h4 class="bg-danger border rounded p-3">There are currently no gigs in our database.! Please come back later.</h4>
+  </div>
+</div>
+<% } %>

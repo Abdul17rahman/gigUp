@@ -3,7 +3,12 @@
   <div class="container text-center">
     <h1 class="display-4">Welcome to gigUp</h1>
     <p class="lead">A platform where employers meet employees for short time freelancing gigs.</p>
-    <a href="/jobs" class="btn btn-primary btn-lg">Get Started</a>
+    <% if (!employer){ %>
+    <a href="/jobs" class="btn btn-primary btn-lg">Find a Gig</a>
+    <% } %>
+    <% if (!user){ %>
+    <a href="<%= employer ? `/employers/${employer._id}/jobs/new` : '/employers/login' %>" class="btn btn-success btn-lg">Post a Gig</a>
+    <% } %>
   </div>
 </section>
 

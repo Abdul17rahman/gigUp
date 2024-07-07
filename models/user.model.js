@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const Proposal = require("./proposal.model");
 const Contract = require("./contract.model");
+const Review = require("../models/review.model");
 
 const userSchema = new Schema({
   username: {
@@ -54,6 +55,9 @@ userSchema.post("findOneAndDelete", async function (user) {
   }
   if (user.contracts.length) {
     await Contract.deleteMany({ _id: { $in: user.contracts } });
+  }
+  if (user.reviews.length) {
+    await Review.deleteMany({ _id: { $in: user.contracts } });
   }
 });
 

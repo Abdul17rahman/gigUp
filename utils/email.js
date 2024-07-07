@@ -40,7 +40,7 @@ function proposalText(user, job, emp, proposal) {
     <p>Hello ${emp.username}, <br>You have recieved a new job application proposal from ${user.username}, Please visit your account to review it.</p>
     <h4>Application details:</h4>
     <p><strong>Title:</strong> ${job.title}.</p>
-    <p><strong>Price:</strong> ${proposal.price}-${proposal.period}.</p>
+    <p><strong>Price: $</strong>${proposal.price}-${proposal.period}.</p>
     <p><strong>Cover letter:</strong> ${proposal.cover}.</p>
     <p>Thank you. <br> <br> Regards <br> Admin</p>
     <p>This is an auto-generated Email, please do not reply.!</p>
@@ -63,7 +63,7 @@ function responseText(user, job, proposal, text) {
     <p>Hello ${user.username}, <br><p> Your proposal has been ${text}, Please visit your account to review it.</p>
     <h4>Application details:</h4>
     <p><strong>Title:</strong> ${job.title}.</p>
-    <p><strong>Price:</strong> ${proposal.price}$-${proposal.period}.</p>
+    <p><strong>Price: $</strong>${proposal.price}-${proposal.period}.</p>
     <p>Thank you. <br> <br> Regards <br> Admin</p>
     <p>This is an auto-generated Email, please do not reply.!</p>
   `;
