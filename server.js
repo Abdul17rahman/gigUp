@@ -54,6 +54,11 @@ app.use(methodOverride("_method"));
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
+// routing to home
+app.get("/", (req, res) => {
+  res.redirect("/home");
+});
+
 // router file with all endpoints
 app.use("/", router);
 

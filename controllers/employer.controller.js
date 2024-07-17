@@ -59,6 +59,17 @@ class EmployerController {
         (c) =>
           c.proposal && c.proposal.job && String(c.proposal.job.employer) === id
       );
+
+      // Custom sort function to sort by status
+      contracts.sort((a, b) => {
+        const statusOrder = {
+          Running: 1,
+          Completed: 2,
+        };
+
+        return statusOrder[a.status] - statusOrder[b.status];
+      });
+
       res.render("employers/contracts", { contracts });
     }),
   ];
@@ -214,6 +225,17 @@ class EmployerController {
         })
         .populate("user");
       const empProposals = proposals.filter((p) => p.job !== null);
+
+      // Custom sort function to sort by status
+      empProposals.sort((a, b) => {
+        const statusOrder = {
+          Pending: 1,
+          Accepted: 2,
+          Rejected: 3,
+        };
+
+        return statusOrder[a.status] - statusOrder[b.status];
+      });
       res.render("employers/proposals", { empProposals });
     }),
   ];
@@ -307,6 +329,7 @@ class EmployerController {
 
       await newReview.save();
       await user.save();
+
       req.flash("success", "Thank you for your feedback.!");
       res.redirect(`/employers/${empId}`);
     }),

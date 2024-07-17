@@ -151,6 +151,18 @@ class UserController {
     decorateAsync(async (req, res) => {
       const { id } = req.params;
       const proposals = await Proposal.find({ user: id }).populate("job");
+
+      // Custom sort function to sort by status
+      proposals.sort((a, b) => {
+        const statusOrder = {
+          Pending: 1,
+          Accepted: 2,
+          Rejected: 3,
+        };
+
+        return statusOrder[a.status] - statusOrder[b.status];
+      });
+
       res.render("users/proposals", { proposals });
     }),
   ];
@@ -181,6 +193,16 @@ class UserController {
       const contracts = foundContracts.filter(
         (c) => c.proposal && c.proposal.job
       );
+
+      contracts.sort((a, b) => {
+        const statusOrder = {
+          Running: 1,
+          Completed: 2,
+        };
+
+        return statusOrder[a.status] - statusOrder[b.status];
+      });
+
       res.render("users/contracts", { contracts });
     }),
   ];
