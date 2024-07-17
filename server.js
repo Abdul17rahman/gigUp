@@ -1,4 +1,6 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const express = require("express");
 const path = require("path");
@@ -6,6 +8,7 @@ const methodOverride = require("method-override");
 const expresslayout = require("express-ejs-layouts");
 const session = require("express-session");
 const flash = require("connect-flash");
+const mongoSantize = require("express-mongo-sanitize");
 
 const connectDb = require("./utils/db");
 const AppEror = require("./utils/AppError");
@@ -30,6 +33,9 @@ app.use(
 );
 
 app.use(flash());
+
+// Sanitize input to avoid mongo injection
+app.use(mongoSantize());
 
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
