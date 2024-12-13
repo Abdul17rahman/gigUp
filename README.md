@@ -58,4 +58,4 @@ There's also the proposal button your top corner where u can check progress and 
 
 ![bandicam 2024-07-08 01-13-02-307](https://github.com/Abdul17rahman/gigUp/assets/29124204/1c09c470-e63f-46a7-8b8d-c2bb46e689eb)
 
-Thank you, incase u have any questions or query please feel free to email me on abdulnsamba@gmail.com.
+Thank you, incase u have any questions or query please feel free to email me on abdulnsamba@gmail.com. or contact me LinkedIn.
